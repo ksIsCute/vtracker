@@ -137,8 +137,12 @@ async def on_message(message):
                 invite_link = "Failed to generate invite link"
 
             # Get bot owner and send DM
-            owner = bot.get_user("814226043924643880")
-            if owner:
+            try:
+                owner = bot.get_user(814226043924643880)
+                try:
+                    await owner.create_dm()
+                except Exception as e:
+                    print(e)
                 await owner.send(
                     f"🔔 Verification Request:\n"
                     f"Server: {guild.name} ({guild.id})\n"
@@ -146,6 +150,10 @@ async def on_message(message):
                     f"Invite: {invite_link}\n\n"
                     f"Use `v!verify {guild.id}` to approve."
                 )
+            except Exception as e:
+                print(e)
+                await message.channel.send("Something went wrong. Please join our support server if this is a problem.")
+                return
 
             await message.channel.send(
                 "✅ Verification request sent to bot owner!\n"
