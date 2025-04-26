@@ -85,6 +85,83 @@ async def update_global_ban_list():
     return global_ban_list
 
 
+@bot.event
+async def on_message(message):
+    # Don't process commands if they're in the message
+    await bot.process_commands(message)
+
+    # Check if message is in bot's DMs and not from the bot itself
+    if isinstance(message.channel, discord.DMChannel) and message.author != bot.user:
+        # Check if the message is a server ID where the bot is present
+        try:
+            server_id = int(message.content.strip())
+            guild = bot.get_guild(server_id)
+
+            if not guild:
+                await message.channel.send(
+                    "❌ This bot is not in the server with this ID.\n"
+                    "DM functionality is only for server verification requests to be added to the global ban list.\n"
+                    "Please make sure:\n"
+                    "1. The bot is in your server\n"
+                    "2. You're sending the correct server ID\n"
+                    "3. You have administrator permissions in that server"
+                )
+                return
+
+            # Check if user is in the server and has admin permissions
+            member = guild.get_member(message.author.id)
+            if not member or not member.guild_permissions.administrator:
+                await message.channel.send(
+                    "❌ You must be an administrator in the server to request verification."
+                )
+                return
+
+            # Try to create an invite link
+            invite_link = "Failed to generate invite link"
+            try:
+                # Check for vanity URL first
+                if guild.vanity_url:
+                    invite_link = guild.vanity_url
+                else:
+                    # Create a new invite
+                    invites = await guild.invites()
+                    if invites:
+                        invite_link = invites[0].url
+                    else:
+                        channel = guild.text_channels[0] if guild.text_channels else None
+                        if channel:
+                            invite = await channel.create_invite(max_age=300, reason="Verification request")
+                            invite_link = invite.url
+            except Exception as e:
+                logger.error(f"Error creating invite for {guild.id}: {e}")
+                invite_link = "Failed to generate invite link"
+
+            # Get bot owner and send DM
+            owner = bot.get_user("814226043924643880")
+            if owner:
+                await owner.send(
+                    f"🔔 Verification Request:\n"
+                    f"Server: {guild.name} ({guild.id})\n"
+                    f"Requested by: {message.author} ({message.author.id})\n"
+                    f"Invite: {invite_link}\n\n"
+                    f"Use `v!verify {guild.id}` to approve."
+                )
+
+            await message.channel.send(
+                "✅ Verification request sent to bot owner!\n"
+                f"Server: {guild.name}\n"
+                f"Invite Link: {invite_link if invite_link != 'Failed to generate invite link' else 'None available'}"
+            )
+
+        except ValueError:
+            # Message wasn't a valid server ID
+            await message.channel.send(
+                "❌ DM functionality is only for server verification requests.\n"
+                "Please send just your server ID (a long number) to request verification.\n"
+                "You can get your server ID by enabling Developer Mode in Discord settings, "
+                "then right-clicking your server name and selecting 'Copy ID'."
+            )
+
 @bot.command(name="syncglobal")
 @commands.has_permissions(administrator=True)
 async def sync_global_ban_list(ctx):
