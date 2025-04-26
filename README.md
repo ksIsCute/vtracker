@@ -36,5 +36,15 @@
 ![image](https://github.com/user-attachments/assets/3486a0d1-73ea-4632-852a-da9037037fa5)
 > Verification requests get sent to me (soon to be multiple people if this scales)
 
+![image](https://github.com/user-attachments/assets/7ba39dcb-670b-47fe-9ff5-f4bb18146c19)
+> Example server being sent in for verification & correct bot response
+
+![image](https://github.com/user-attachments/assets/9b57f76b-e9f0-488a-8c08-975e05af0f9c)
+> On the observer side, this is what we see
+
 ## Potential for larger lists
 - Pedophiles, Weirdos, and other bad actors can be added to the list, VORTH is just how you can describe those people (think of it as a handy umbrella term), anyone banned with that "vorth" tag, has done insanely depolorable things that nobody even wants to learn about. Thats the criteria for adding to the list. Please use your best judgement, or we will
+
+
+# How do I become an observer / maintainer?
+> Contribute to the bot or dm `@ks.net` on discord
