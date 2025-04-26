@@ -45,6 +45,10 @@
 ## Potential for larger lists
 - Pedophiles, Weirdos, and other bad actors can be added to the list, VORTH is just how you can describe those people (think of it as a handy umbrella term), anyone banned with that "vorth" tag, has done insanely depolorable things that nobody even wants to learn about. Thats the criteria for adding to the list. Please use your best judgement, or we will
 
+# Rate Limit Friendly
+![image](https://github.com/user-attachments/assets/bb05d240-542f-4ccf-9e37-43e80c10efc0)
+> Example of command optimized for better rate limits
+> Bans are timed with rate limits to offer seamless experience
 
 # How do I become an observer / maintainer?
 > Contribute to the bot or dm `@ks.net` on discord
