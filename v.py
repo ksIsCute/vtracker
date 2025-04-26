@@ -5,6 +5,7 @@ from colorama import init, Fore, Style
 import discord
 import io
 from discord.ext import commands
+from datetime import datetime
 
 # Initialize colorama
 init(autoreset=True)
@@ -170,10 +171,10 @@ async def on_message(message):
                 "then right-clicking your server name and selecting 'Copy ID'."
             )
 
-@bot.command(name="syncglobal")
+@bot.command(name="syncglobal", aliases=['gb', 'sgb', 'sg'])
 @commands.has_permissions(administrator=True)
 async def sync_global_ban_list(ctx):
-    """Update the global ban list with all verified servers' bans"""
+    """Update the global banlist with all verified servers' bans"""
     await ctx.send("Updating global ban list... This may take a while.")
 
     global_ban_list = await update_global_ban_list()
@@ -185,7 +186,7 @@ async def sync_global_ban_list(ctx):
 @bot.command(name="massban", aliases=['setup', 'ban'])
 @commands.has_permissions(ban_members=True)
 async def mass_ban(ctx, confirm: str = None):
-    """Ban all users from the global ban list (type !massban confirm to proceed)"""
+    """Ban all users from the global banlist (type !massban confirm to proceed)"""
     global_ban_list = load_global_ban_list()
     if confirm != "confirm":
         await ctx.send(f"This will ban all users from the global ban list.\n-# *(Currently {len(global_ban_list)})*"
@@ -217,7 +218,8 @@ async def mass_ban(ctx, confirm: str = None):
             await progress_msg.edit(content=f"Progress: {i}/{len(global_ban_list)} "
                                             f"(Success: {success}, Failed: {failed})")
             await asyncio.sleep(1)  # Rate limiting
-
+    if failed > 0:
+        await ctx.send("Failed bans detected. [Is the bot above your member role?] Or is a banned user above the bot?")
     await ctx.send(f"Mass ban completed. Success: {success}, Failed: {failed}")
 
 @bot.command(name="verify")
@@ -232,74 +234,190 @@ async def _verify(ctx, server_id: str):
         server = bot.get_guild(int(server_id))
         logger.info(f"Added new verified server: {server.name} ({server.id})")
 
-@bot.command(name="banlist")
-async def banlist(ctx):
-    """Show bans containing 'vorth' in the reason"""
-    # Add server to verified list if not already there
 
-    # Fetch and filter bans
+# Global variable to track active paginators
+import io
+import asyncio
+from datetime import datetime
+from discord.ext import commands
+
+# Global tracking variables
+active_paginators = {}  # {user_id: message_id}
+original_ban_data = {}  # {message_id: {'user_ids': [], 'ban_list': [], 'timestamp': datetime}}
+
+
+@bot.command(name="banlist", aliases=['g'])
+async def banlist(ctx, globa: str = ""):
+    """Show bans containing 'vorth' in the reason (use v!g or v!banlist global for global list)"""
+    global active_paginators, original_ban_data
+
+    # Check for existing paginator
+    if ctx.author.id in active_paginators:
+        try:
+            msg = await ctx.channel.fetch_message(active_paginators[ctx.author.id])
+            await ctx.send("You already have an active banlist. Please finish using that one first.")
+            return
+        except:
+            pass  # Message doesn't exist anymore
+
     ban_list = []
     user_ids = []
-    async for ban_entry in ctx.guild.bans(limit=400):
-        if ban_entry.reason and "vorth" in ban_entry.reason.lower():
-            ban_list.append(f"{ban_entry.user} ({ban_entry.user.id}) - Reason: {ban_entry.reason}\n")
-            user_ids.append(str(ban_entry.user.id))
+    current_data = {}
 
-    if not ban_list:
-        await ctx.send("No bans found.")
-        return
+    try:
+        # Mark this paginator as active
+        active_paginators[ctx.author.id] = None  # Will be set after message is sent
 
-    # Paginate into embeds (5 bans per page)
-    pages = []
-    verified_text = " This server is verified! Thanks for keeping our communities safe!"
-    for i in range(0, len(ban_list), 5):
-        embed = discord.Embed(
-            title=f"Returned List ({len(ban_list)} total)",
-            description="".join(ban_list[i:i + 5]),
-            color=discord.Color.red()
-        )
-        embed.set_footer(text=f"Page {i // 5 + 1}/{(len(ban_list) // 5) + 1}" + verified_text)
-        pages.append(embed)
+        # Load bans based on command type
+        if "global" in globa.lower() or ctx.invoked_with == "g":
+            title = "The Global Ban List"
+            global_banlist = load_global_ban_list()
+            bans = global_banlist.get("bans", {})
 
-    # Send the first page
-    message = await ctx.send(embed=pages[0])
+            for user_id, ban_data in bans.items():
+                reason = ban_data.get("reason", "").lower()
+                if "vorth" in reason:
+                    user_ids.append(user_id)
+                    servers = ban_data.get("servers", ban_data.get("servers", []))
+                    entry = f"{ban_data['name']} ({user_id}) - Reason: {ban_data['reason']}"
 
-    # Add reactions for navigation and file export
-    if len(pages) > 1:
-        await message.add_reaction("⬅️")
-        await message.add_reaction("➡️")
-    await message.add_reaction("🔼")  # Export as file
+                    if str(ctx.guild.id) in servers:
+                        ban_list.append(f":star: {entry}\n")
+                    else:
+                        ban_list.append(f"{entry}\n")
+        else:
+            title = "Server Ban List"
+            async for ban_entry in ctx.guild.bans(limit=400):
+                if ban_entry.reason and "vorth" in ban_entry.reason.lower():
+                    ban_list.append(f"{ban_entry.user} ({ban_entry.user.id}) - Reason: {ban_entry.reason}\n")
+                    user_ids.append(str(ban_entry.user.id))
 
-    def check(reaction, user):
-        return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️", "🔼"]
+        if not ban_list:
+            await ctx.send("No bans found with 'vorth' in the reason.")
+            return
 
-    current_page = 0
-    while True:
-        try:
-            reaction, user = await bot.wait_for("reaction_add", timeout=60.0, check=check)
+        # Create pages
+        pages = []
+        verified_text = " This server is verified! Thanks for keeping our communities safe!"
 
-            # Handle navigation
-            if str(reaction.emoji) == "➡️" and current_page < len(pages) - 1:
-                current_page += 1
-                await message.edit(embed=pages[current_page])
-            elif str(reaction.emoji) == "⬅️" and current_page > 0:
-                current_page -= 1
-                await message.edit(embed=pages[current_page])
-            elif str(reaction.emoji) == "🔼":
-                # Export as file when 🔼 is clicked
-                file_content = "\n".join(user_ids)
-                file = io.BytesIO(file_content.encode('utf-8'))
-                await ctx.send(
-                    content=f"📁 Raw list export *({len(ban_list)} entries)*:",
-                    file=discord.File(file, filename="ban_list.txt")
-                )
+        for i in range(0, len(ban_list), 5):
+            embed = discord.Embed(
+                title=f"{title} ({len(ban_list)} total)",
+                description="".join(ban_list[i:i + 5]),
+                color=discord.Color.red()
+            )
+            embed.set_footer(text=f"Page {i // 5 + 1}/{(len(ban_list) // 5) + 1}" + verified_text)
+            pages.append(embed)
 
-            await message.remove_reaction(reaction, user)
+        # Send initial message
+        message = await ctx.send(embed=pages[0])
+        active_paginators[ctx.author.id] = message.id
+        original_ban_data[message.id] = {
+            'user_ids': user_ids.copy(),
+            'ban_list': ban_list.copy(),
+            'timestamp': datetime.now()
+        }
 
-        except asyncio.TimeoutError:
-            await message.clear_reactions()
-            break
+        # Add reactions
+        reactions = ["🔼", "❌"]
+        if len(pages) > 1:
+            reactions.extend(["⬅️", "➡️"])
 
+        for reaction in reactions:
+            await message.add_reaction(reaction)
+
+        def check(reaction, user):
+            return (user == ctx.author and
+                    str(reaction.emoji) in ["⬅️", "➡️", "🔼", "❌"] and
+                    reaction.message.id == message.id)
+
+        current_page = 0
+        while True:
+            try:
+                reaction, user = await bot.wait_for("reaction_add", timeout=30.0, check=check)
+                emoji = str(reaction.emoji)
+
+                if emoji == "❌":
+                    await message.delete()
+                    break
+
+                elif emoji == "🔼":
+                    file_content = "\n".join(user_ids)
+                    file = io.BytesIO(file_content.encode('utf-8'))
+                    await ctx.send(
+                        content=f"📁 Raw list export *({len(ban_list)} entries)*:",
+                        file=discord.File(file, filename="ban_list.txt")
+                    )
+
+                elif emoji in ["⬅️", "➡️"]:
+                    # Check for updates
+                    new_ban_list = []
+                    new_user_ids = []
+                    updated = False
+
+                    if "global" in globa.lower() or ctx.invoked_with == "g":
+                        global_banlist = load_global_ban_list()
+                        bans = global_banlist.get("bans", {})
+
+                        for user_id, ban_data in bans.items():
+                            reason = ban_data.get("reason", "").lower()
+                            if "vorth" in reason:
+                                new_user_ids.append(user_id)
+                                servers = ban_data.get("servers", ban_data.get("servers", []))
+                                entry = f"{ban_data['name']} ({user_id}) - Reason: {ban_data['reason']}"
+
+                                if user_id not in original_ban_data[message.id]['user_ids']:
+                                    new_ban_list.append(f"🔥 {entry}\n")
+                                    updated = True
+                                elif str(ctx.guild.id) in servers:
+                                    new_ban_list.append(f":star: {entry}\n")
+                                else:
+                                    new_ban_list.append(f"{entry}\n")
+
+                    if updated:
+                        # Rebuild pages with updates
+                        pages = []
+                        for i in range(0, len(new_ban_list), 5):
+                            embed = discord.Embed(
+                                title=f"{title} ({len(new_ban_list)} total) - UPDATED",
+                                description="".join(new_ban_list[i:i + 5]),
+                                color=discord.Color.orange()
+                            )
+                            embed.set_footer(text=f"Page {i // 5 + 1}/{(len(new_ban_list) // 5) + 1}" + verified_text)
+                            pages.append(embed)
+
+                        # Update stored data
+                        original_ban_data[message.id] = {
+                            'user_ids': new_user_ids.copy(),
+                            'ban_list': new_ban_list.copy(),
+                            'timestamp': datetime.now()
+                        }
+
+                    # Handle page turn
+                    if emoji == "➡️" and current_page < len(pages) - 1:
+                        current_page += 1
+                    elif emoji == "⬅️" and current_page > 0:
+                        current_page -= 1
+
+                    await message.edit(embed=pages[current_page])
+
+                await message.remove_reaction(reaction, user)
+
+            except asyncio.TimeoutError:
+                await message.clear_reactions()
+                break
+            except Exception as e:
+                print(f"Error in paginator: {e}")
+                break
+
+    except Exception as e:
+        await ctx.send(f"❌ Error loading ban list: {e}")
+    finally:
+        # Clean up
+        if ctx.author.id in active_paginators:
+            del active_paginators[ctx.author.id]
+        if 'message' in locals() and message.id in original_ban_data:
+            del original_ban_data[message.id]
 
 # Run the bot
 TOKEN = load_config().get('vtoken')
