@@ -28,3 +28,13 @@
 ![Image](https://github.com/user-attachments/assets/cb1ef4d9-166f-4796-897f-e59d890a9743)
 - Gives live updates based on how much progress has been made
 ![Image](https://github.com/user-attachments/assets/54945987-9143-4ff4-948b-4297891a4834)
+
+## Verification Process & DM Flow
+- The bot must be in the server it is trying to verify, if not, you will see this
+![image](https://github.com/user-attachments/assets/33c21930-69d5-4e7c-b21c-5c632cdf387c)
+- You must only send SERVER IDs to the bot.
+![image](https://github.com/user-attachments/assets/3486a0d1-73ea-4632-852a-da9037037fa5)
+> Verification requests get sent to me (soon to be multiple people if this scales)
+
+## Potential for larger lists
+- Pedophiles, Weirdos, and other bad actors can be added to the list, VORTH is just how you can describe those people (think of it as a handy umbrella term), anyone banned with that "vorth" tag, has done insanely depolorable things that nobody even wants to learn about. Thats the criteria for adding to the list. Please use your best judgement, or we will
