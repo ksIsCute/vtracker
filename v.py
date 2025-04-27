@@ -420,9 +420,9 @@ async def globalbanlist(ctx):
                 entry = f"{ban_data['name']} ({user_id}) - Reason: {ban_data['reason']}"
 
                 if str(ctx.guild.id) in servers:
-                    ban_list.append(f":star: {entry}\n")
-                else:
                     ban_list.append(f"{entry}\n")
+                else:
+                    ban_list.append(f":star: {entry}\n")
 
         if not ban_list:
             await ctx.send("No global bans found with 'vorth' or 'racc' in the reason.")
