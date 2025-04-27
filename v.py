@@ -460,7 +460,7 @@ async def auditor(ctx, member: discord.Member):
     auditors.append(member.id)
     await ctx.reply("Added an auditor successfully.")
 
-@bot.command(name="strip", aliases=["s", "remove"])
+@bot.command(name="strip", aliases=["s", 'deaudit'])
 @commands.is_owner()
 async def strip(ctx, member: discord.Member):
     """Remove an auditor, Owner Only."""

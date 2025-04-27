@@ -1,6 +1,46 @@
 from discord.ext import commands
 import json
-auditors = [814226043924643880, 1329933418427056191, 837048825859538995]
+
+# File paths
+CONFIG_FILE = "data/asd.json"
+VERIFIED_SERVERS_FILE = "data/verified_servers.json"
+GLOBAL_BAN_LIST_FILE = "data/global_ban_list.json"
+
+def load_config():
+    with open(CONFIG_FILE, "r") as f:
+        return json.load(f)
+
+def load_verified_servers():
+    try:
+        with open(VERIFIED_SERVERS_FILE, "r") as f:
+            return json.load(f).get("servers", [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_verified_servers(servers):
+    with open(VERIFIED_SERVERS_FILE, "w") as f:
+        json.dump({"servers": servers}, f, indent=4)
+
+def load_global_ban_list():
+    try:
+        with open(GLOBAL_BAN_LIST_FILE, "r") as f:
+            return json.load(f).get("bans", {})
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_global_ban_list(ban_list):
+    with open(GLOBAL_BAN_LIST_FILE, "w") as f:
+        json.dump({"bans": ban_list}, f, indent=4)
+
+# Load auditors from config file
+auditors = load_config()["auditors"]
+
+def is_auditor():
+    """Decorator to check if the user is an auditor."""
+    def predicate(ctx):
+        return ctx.author.id in auditors  # Check if the user ID is in the auditors list
+    return commands.check(predicate)
+
 class BanManagement(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -8,30 +48,22 @@ class BanManagement(commands.Cog):
 
     def load_data(self):
         """Load global ban list from file"""
-        try:
-            with open('data/global_ban_list.json') as f:
-                self.banned_accounts = json.load(f)['bans']
-            print("Loaded global ban list with", len(self.banned_accounts), "entries")
-        except FileNotFoundError as e:
-            print(f"Error loading data files: {e}")
-            self.banned_accounts = {}
+        self.banned_accounts = load_global_ban_list()
+        print("Loaded global ban list with", len(self.banned_accounts), "entries")
 
     def save_data(self):
         """Save global ban list to file"""
-        with open('data/global_ban_list.json', 'w') as f:
-            json.dump({'bans': self.banned_accounts}, f, indent=2)
+        save_global_ban_list(self.banned_accounts)
 
-    @commands.command()
+    @commands.command(aliases=['banadd', 'addban'])
+    @is_auditor()  # Only auditors can use this command
     async def add_to_banlist(self, ctx, user_id: int, *, reason: str = "No reason provided"):
         """Add a user to the global ban list"""
-        if ctx.author.id in auditors:  # Check if the user is an auditor
-            self.banned_accounts[user_id] = {"reason": reason}
-            self.save_data()
-            await ctx.send(f"✅ User with ID {user_id} added to the global ban list for the reason: {reason}")
-        else:
-            await ctx.send("❌ You do not have permission to use this command.")
+        self.banned_accounts[user_id] = {"reason": reason}
+        self.save_data()
+        await ctx.send(f"✅ User with ID {user_id} added to the global ban list for the reason: {reason}")
 
-    @commands.command()
+    @commands.command(aliases=['suggestremove', 'removesuggest'])
     async def suggest_remove_from_banlist(self, ctx, user_id: int):
         """Suggest removal of a user from the global ban list"""
         # Send to the auditor channel
@@ -53,19 +85,16 @@ class BanManagement(commands.Cog):
         else:
             await ctx.send(f"❌ Auditor channel not found.")
 
-    @commands.command()
+    @commands.command(aliases=['banremove', 'removeban', 'remove'])
+    @is_auditor()  # Only auditors can use this command
     async def remove_from_banlist(self, ctx, user_id: int):
         """Remove a user from the global ban list (if they exist)"""
-        if ctx.author.id in auditors:  # Check if the user is an auditor
-            if user_id in self.banned_accounts:
-                del self.banned_accounts[user_id]
-                self.save_data()
-                await ctx.send(f"✅ User ID {user_id} has been removed from the global ban list.")
-            else:
-                await ctx.send(f"❌ User ID {user_id} not found in the global ban list.")
+        if user_id in self.banned_accounts:
+            del self.banned_accounts[user_id]
+            self.save_data()
+            await ctx.send(f"✅ User ID {user_id} has been removed from the global ban list.")
         else:
-            await ctx.send("❌ You do not have permission to use this command.")
+            await ctx.send(f"❌ User ID {user_id} not found in the global ban list.")
 
 async def setup(bot):
     await bot.add_cog(BanManagement(bot))
-
