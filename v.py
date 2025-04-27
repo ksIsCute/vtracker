@@ -2,6 +2,7 @@ import json
 import re
 import logging
 from colorama import init, Fore, Style
+from pathlib import Path
 import discord
 import io
 import os
@@ -24,22 +25,21 @@ bot = commands.Bot(command_prefix="v!", intents=INTENTS)
 @bot.event
 async def on_ready():
     logger.info(f"{Fore.GREEN}Logged in as {bot.user}{Style.RESET_ALL}")
-    await load_cogs()
+    await load_cogs(bot)
 
 # File paths
 CONFIG_FILE = "data/asd.json"
 VERIFIED_SERVERS_FILE = "data/verified_servers.json"
 GLOBAL_BAN_LIST_FILE = "data/global_ban_list.json"
 
-# Global tracking variables
-auditors = [814226043924643880, 1329933418427056191, 837048825859538995]
-active_paginators = {}  # {user_id: message_id}
-original_ban_data = {}  # {message_id: {'user_ids': [], 'ban_list': [], 'timestamp': datetime}}
-
 def load_config():
     with open(CONFIG_FILE, "r") as f:
         return json.load(f)
 
+# Global tracking variables
+auditors = load_config()['auditors']
+active_paginators = {}  # {user_id: message_id}
+original_ban_data = {}  # {message_id: {'user_ids': [], 'ban_list': [], 'timestamp': datetime}}
 
 def load_verified_servers():
     try:
@@ -66,10 +66,19 @@ def save_global_ban_list(ban_list):
     with open(GLOBAL_BAN_LIST_FILE, "w") as f:
         json.dump({"bans": ban_list}, f, indent=4)
 
-async def load_cogs():
+import os
+import logging
+
+async def load_cogs(bot):
     for filename in os.listdir('./cog'):
         if filename.endswith('.py'):
-            await bot.load_extension(f'cog.{filename[:-3]}')
+            try:
+                await bot.load_extension(f'cog.{filename[:-3]}')
+                logging.info(f'Loaded {filename}')
+            except Exception as e:
+                logging.error(f'Error loading {filename}: {e}')
+
+
 
 async def update_global_ban_list():
     """Update the global ban list by merging all verified servers' bans"""
@@ -149,14 +158,10 @@ async def on_message(message):
                 logger.error(f"Error creating invite for {guild.id}: {e}")
                 invite_link = "Failed to generate invite link"
 
-            # Get bot owner and send DM
+            # Send to auditor channel
             try:
-                owner = bot.get_user(814226043924643880)
-                try:
-                    await owner.create_dm()
-                except Exception as e:
-                    print(e)
-                await owner.send(
+                audit = bot.get_channel(1365903180730335315)
+                await audit.send(
                     f"🔔 Verification Request:\n"
                     f"Server: {guild.name} ({guild.id})\n"
                     f"Requested by: {message.author} ({message.author.id})\n"
@@ -169,7 +174,7 @@ async def on_message(message):
                 return
 
             await message.channel.send(
-                "✅ Verification request sent to bot owner!\n"
+                "✅ Verification request sent to audit team!\n"
                 f"Server: {guild.name}\n"
                 f"Invite Link: {invite_link if invite_link != 'Failed to generate invite link' else 'None available'}"
             )
@@ -447,6 +452,20 @@ async def globalbanlist(ctx):
     finally:
         if ctx.author.id in active_paginators:
             del active_paginators[ctx.author.id]
+
+@bot.command(name="auditor", aliases=["audit", "mod"])
+@commands.is_owner()
+async def auditor(ctx, member: discord.Member):
+    """Add an auditor, Owner Only."""
+    auditors.append(member.id)
+    await ctx.reply("Added an auditor successfully.")
+
+@bot.command(name="strip", aliases=["s", "remove"])
+@commands.is_owner()
+async def strip(ctx, member: discord.Member):
+    """Remove an auditor, Owner Only."""
+    auditors.remove(member.id)
+    await ctx.reply("Removed an auditor successfully.")
 
 # Run the bot
 TOKEN = load_config().get('vtoken')
