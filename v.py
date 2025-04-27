@@ -240,7 +240,7 @@ async def _verify(ctx, server_id: str):
 
 @bot.command(name="banlist", aliases=['g'])
 async def banlist(ctx, globa: str = ""):
-    """Show bans containing 'vorth' in the reason (use v!g or v!banlist global for global list)"""
+    """Show bans containing 'vorth' and 'racc' in the reason (use v!g or v!banlist global for global list)"""
     global active_paginators, original_ban_data
 
     # Check for existing paginator
@@ -453,7 +453,7 @@ async def banlist_all(ctx, globa: str = ""):
             title = "Server Ban List (All Bans)"
             async for ban_entry in ctx.guild.bans(limit=400):
                 ban_list.append(f"{ban_entry.user} ({ban_entry.user.id}) - Reason: {ban_entry.reason or 'No reason provided'}\n")
-                user_ids.append(f"{ban_entry.user} ({ban_entry.user.id}) - Reason: {ban_entry.reason or 'No reason provided'}\n")
+                user_ids.append(str(ban_entry.user.id))
 
         if not ban_list:
             await ctx.send("No bans found.")
@@ -483,7 +483,7 @@ async def banlist_all(ctx, globa: str = ""):
         }
 
         # Add reactions
-        reactions = ["🔼", "❌"]
+        reactions = ["🔼", "❌", "🗒️"]
         if len(pages) > 1:
             reactions.extend(["⬅️", "➡️"])
 
@@ -492,7 +492,7 @@ async def banlist_all(ctx, globa: str = ""):
 
         def check(reaction, user):
             return (user == ctx.author and
-                    str(reaction.emoji) in ["⬅️", "➡️", "🔼", "❌"] and
+                    str(reaction.emoji) in ["⬅️", "➡️", "🔼", "❌", "🗒️"] and
                     reaction.message.id == message.id)
 
         current_page = 0
@@ -506,6 +506,13 @@ async def banlist_all(ctx, globa: str = ""):
                     break
 
                 elif emoji == "🔼":
+                    file_content = "\n".join(ban_list)
+                    file = io.BytesIO(file_content.encode('utf-8'))
+                    await ctx.send(
+                        content=f"📁 Raw list export *({len(ban_list)} entries)*:",
+                        file=discord.File(file, filename="ban_list.txt")
+                    )
+                elif emoji == "🗒️":
                     file_content = "\n".join(user_ids)
                     file = io.BytesIO(file_content.encode('utf-8'))
                     await ctx.send(
