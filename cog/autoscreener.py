@@ -39,6 +39,9 @@ class AutoScreener(commands.Cog):
 
         for guild_id, settings in self.servers.items():
             # If a key is missing, add it
+            if 'whitelist' not in settings:
+                settings['whitelist'] = []  # Default: no users are whitelisted
+                updated = True
             if 'screening' not in settings:
                 settings['screening'] = False
                 updated = True
@@ -48,13 +51,6 @@ class AutoScreener(commands.Cog):
             if 'logs_channel' not in settings:
                 settings['logs_channel'] = None
                 updated = True
-
-            # Validate the action if it exists
-            if 'do' in settings:
-                action = settings['do']
-                if not self._is_valid_action(action):
-                    settings['do'] = 'log'  # Reset to default if invalid
-                    updated = True
 
         if updated:
             self.save_servers()
@@ -105,8 +101,14 @@ class AutoScreener(commands.Cog):
                 if len(part) >= 3:
                     self.banned_name_patterns.add(part)
 
-    def is_similar_name(self, name):
-        """Check if name matches any banned patterns"""
+    def is_similar_name(self, name, guild_id):
+        """Check if name matches any banned patterns, excluding whitelisted users"""
+        # Check if the user is whitelisted
+        if guild_id in self.servers and self.servers[guild_id].get('whitelist'):
+            whitelisted_ids = self.servers[guild_id]['whitelist']
+            if str(name) in whitelisted_ids:
+                return False  # User is whitelisted, no need to check for banned patterns
+
         name_lower = name.lower()
         banned_names = [acc['name'].lower() for acc in self.banned_accounts.values()]
 
@@ -136,14 +138,20 @@ class AutoScreener(commands.Cog):
             self.servers[guild_id] = {
                 "screening": False,
                 "do": "log",  # Default action is to log
-                "logs_channel": None
+                "logs_channel": None,
+                "whitelist": []  # Default: no users whitelisted
             }
             self.save_servers()
             print(f"Auto-added server {guild_id} to servers.json")
 
+        # Skip screening if the user is whitelisted
+        if member.id in self.servers[guild_id].get('whitelist', []):
+            print(f"✅ {member.mention} is whitelisted, no screening.")
+            return
+
         server_settings = self.servers.get(guild_id, {})
 
-        if not self.is_similar_name(member.name):
+        if not self.is_similar_name(member.name, guild_id):
             return
 
         screening_enabled = server_settings.get('screening', False)
@@ -386,6 +394,37 @@ class AutoScreener(commands.Cog):
             color=discord.Color.blue()
         )
         await ctx.send(embed=embed)
+
+    @vsettings.command()
+    async def addwhitelist(self, ctx, user: discord.User):
+        """Add a user to the whitelist for the server"""
+        guild_id = str(ctx.guild.id)
+        if guild_id not in self.servers:
+            self.servers[guild_id] = {
+                "whitelist": [],  # Default: no users whitelisted
+                "screening": False,
+                "do": "log",
+                "logs_channel": None
+            }
+
+        if user.id not in self.servers[guild_id]['whitelist']:
+            self.servers[guild_id]['whitelist'].append(user.id)
+            self.save_servers()
+            await ctx.send(f"✅ {user.mention} has been added to the whitelist.")
+        else:
+            await ctx.send(f"⚠️ {user.mention} is already whitelisted.")
+
+    @vsettings.command()
+    async def removewhitelist(self, ctx, user: discord.User):
+        """Remove a user from the whitelist for the server"""
+        guild_id = str(ctx.guild.id)
+        if guild_id not in self.servers or user.id not in self.servers[guild_id].get('whitelist', []):
+            await ctx.send(f"⚠️ {user.mention} is not whitelisted.")
+            return
+
+        self.servers[guild_id]['whitelist'].remove(user.id)
+        self.save_servers()
+        await ctx.send(f"✅ {user.mention} has been removed from the whitelist.")
 
 
 async def setup(bot):

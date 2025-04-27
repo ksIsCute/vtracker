@@ -316,7 +316,7 @@ async def handle_pagination(ctx, message, pages, title):
         await message.clear_reactions()
 
 
-@bot.command(name="banlist", aliases=['bans'])
+@bot.command(name="banlist", aliases=['bans', 'bl'])
 async def banlist(ctx):
     """Show server bans containing 'vorth' or 'racc' in the reason."""
     global active_paginators, original_ban_data
@@ -355,7 +355,7 @@ async def banlist(ctx):
             del active_paginators[ctx.author.id]
 
 
-@bot.command(name="banlist_all", aliases=['ball'])
+@bot.command(name="banlist_all", aliases=['ball', 'abl'])
 async def banlist_all(ctx):
     """Show all server bans."""
     global active_paginators, original_ban_data
