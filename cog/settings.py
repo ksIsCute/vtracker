@@ -85,22 +85,35 @@ class Settings(commands.Cog):
 
     @settings_group.command(name='action')
     @commands.has_permissions(manage_guild=True)
-    async def action_setting(self, ctx, action: str):
-        """Set what action to take when a potential bad actor is detected (ban/kick/log)"""
+    async def action_setting(self, ctx, *, action: str):
+        """Set what action to take when a potential bad actor is detected (ban/kick/log or combinations)"""
         guild_id = str(ctx.guild.id)
-        action = action.lower()
 
-        if action not in ('ban', 'kick', 'log'):
-            await ctx.send("❌ Invalid action. Use `ban`, `kick`, or `log`")
+        # Get the AutoScreener cog to use its validation
+        screener = self.bot.get_cog('AutoScreener')
+        if not screener:
+            await ctx.send("❌ AutoScreener cog not loaded")
             return
 
-        self.servers.setdefault(guild_id, {})['do'] = action
+        # Normalize the input
+        normalized_action = action.lower().replace(" ", "").strip(',')
+
+        if not screener._is_valid_action(normalized_action):
+            await ctx.send("❌ Invalid action. Valid options are:\n"
+                           "- `ban` (ban only)\n"
+                           "- `kick` (kick only)\n"
+                           "- `log` (log only)\n"
+                           "- `ban,log` or `log,ban` (ban and log)\n"
+                           "- `kick,log` or `log,kick` (kick and log)")
+            return
+
+        self.servers.setdefault(guild_id, {})['do'] = normalized_action
         self.save_settings()
 
         # Send confirmation message
         embed = discord.Embed(
             title="✅ Setting Changed",
-            description=f"Action for potential bad actors has been set to **{action}**.",
+            description=f"Action for potential bad actors has been set to **{normalized_action}**.",
             color=discord.Color.green()
         )
         await ctx.send(embed=embed)

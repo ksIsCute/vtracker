@@ -62,15 +62,28 @@ class AutoScreener(commands.Cog):
 
     def _is_valid_action(self, action):
         """Check if an action string is valid"""
-        if action in ['ban', 'kick', 'log']:
+        if not isinstance(action, str):
+            return False
+
+        # Normalize the input (lowercase, remove spaces, strip commas)
+        normalized = action.lower().replace(" ", "").strip(',')
+
+        # Check single actions
+        if normalized in ['ban', 'kick', 'log']:
             return True
 
-        # Check for combined actions
-        parts = [part.strip() for part in action.split(',')]
+        # Check combined actions
+        parts = [p for p in normalized.split(',') if p]  # Remove empty parts
+
         if len(parts) == 2:
-            if (parts[0] in ['ban', 'kick'] and parts[1] == 'log') or \
-                    (parts[1] in ['ban', 'kick'] and parts[0] == 'log'):
-                return True
+            # All valid combinations (order doesn't matter)
+            valid_combos = [
+                {'ban', 'log'},
+                {'kick', 'log'}
+            ]
+            return set(parts) in valid_combos
+
+        return False
 
         return False
 
@@ -148,11 +161,11 @@ class AutoScreener(commands.Cog):
     async def _take_action(self, member, action):
         """Execute the appropriate moderation action"""
         reason = "Potential banned user pattern match"
-        message = ""
         actions_taken = []
 
-        # Split combined actions
-        actions = [a.strip() for a in action.split(',')]
+        # Ensure action is properly normalized (just in case)
+        normalized_action = action.lower().replace(" ", "").strip(',')
+        actions = [a for a in normalized_action.split(',') if a]
 
         for action in actions:
             try:
@@ -172,8 +185,7 @@ class AutoScreener(commands.Cog):
         if not actions_taken:
             return f"⚠️ **Potential banned user detected**: {member.mention} (`{member.name}`)"
 
-        # Format the message based on actions taken
-        actions_str = ", ".join(actions_taken).replace("_", " ")
+        actions_str = ", ".join(actions_taken)
         return f"🚨 **{actions_str.capitalize()} potential banned user**: {member.mention} (`{member.name}`)"
 
     def save_servers(self):
@@ -206,11 +218,19 @@ class AutoScreener(commands.Cog):
 
     @vsettings.command()
     async def action(self, ctx, *, action: str):
-        """Set the action to take when a banned user is detected (ban, kick, log, or combinations like ban,log)"""
-        action = action.lower().strip()
+        """Set the action to take when a banned user is detected
+        Options: ban, kick, log, or combinations like ban,log or kick,log"""
 
-        if not self._is_valid_action(action):
-            await ctx.send("Invalid action. Use [ban], [kick], [log], or combinations like [ban,log] or [kick,log]")
+        # Normalize the input
+        normalized_action = action.lower().replace(" ", "").strip(',')
+
+        if not self._is_valid_action(normalized_action):
+            await ctx.send("❌ Invalid action. Valid options are:\n"
+                           "- `ban` (ban only)\n"
+                           "- `kick` (kick only)\n"
+                           "- `log` (log only)\n"
+                           "- `ban,log` or `log,ban` (ban and log)\n"
+                           "- `kick,log` or `log,kick` (kick and log)")
             return
 
         guild_id = str(ctx.guild.id)
@@ -221,9 +241,35 @@ class AutoScreener(commands.Cog):
                 "logs_channel": None
             }
 
-        self.servers[guild_id]['do'] = action
+        # Store the normalized action
+        self.servers[guild_id]['do'] = normalized_action
         self.save_servers()
-        await ctx.send(f"✅ Action set to: `{action}`")
+        await ctx.send(f"✅ Action set to: `{normalized_action}`")
+
+    def _is_valid_action(self, action):
+        """Check if an action string is valid"""
+        if not isinstance(action, str):
+            return False
+
+        # Normalize the input (lowercase, remove spaces, strip commas)
+        normalized = action.lower().replace(" ", "").strip(',')
+
+        # Check single actions
+        if normalized in ['ban', 'kick', 'log']:
+            return True
+
+        # Check combined actions
+        parts = [p for p in normalized.split(',') if p]  # Remove empty parts
+
+        if len(parts) == 2:
+            # All valid combinations (order doesn't matter)
+            valid_combos = [
+                {'ban', 'log'},
+                {'kick', 'log'}
+            ]
+            return set(parts) in valid_combos
+
+        return False
 
     @vsettings.command()
     async def screening(self, ctx, state: str):
