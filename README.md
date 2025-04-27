@@ -16,6 +16,8 @@
 > Your name also gets cemented forever if its in the reason (if you're banning using a bot most of the time by default it is)
 
 ## Global Ban List
+![image](https://github.com/user-attachments/assets/379a7958-15f7-461a-ad69-4b1de8fe79d4)
+> Image of the global ban list, anything with :star: means it hasnt been banned yet.
 > If the bot has the `ban members` permission, you can run `v!setup` or `v!massban` to automatically ban this list
 - The list can be viewed publicly, and is updated soon as a new verified server is added
 - The list is an array of ids, allowing for carl-bot users to `.massban` in their own server, without needing the bot
