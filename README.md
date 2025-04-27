@@ -44,6 +44,11 @@
 ![image](https://github.com/user-attachments/assets/9b57f76b-e9f0-488a-8c08-975e05af0f9c)
 > On the observer side, this is what we see
 
+## Auto Scanning
+![image](https://github.com/user-attachments/assets/45451648-f8e4-41dd-b43d-a8992b2d3911)
+> Available settings for the auto scan, these can be tweaked to your liking!
+> Keep in mind its not 100% perfect, setting to `ban` is **NOT RECCOMENDED** in its current state, have some kind of human intervention!
+
 ## Potential for larger lists
 - Pedophiles, Weirdos, and other bad actors can be added to the list, VORTH is just how you can describe those people (think of it as a handy umbrella term), anyone banned with that "vorth" tag, has done insanely depolorable things that nobody even wants to learn about. Thats the criteria for adding to the list. Please use your best judgement, or we will
 
