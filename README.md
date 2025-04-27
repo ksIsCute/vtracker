@@ -49,6 +49,10 @@
 > Available settings for the auto scan, these can be tweaked to your liking!
 > Keep in mind its not 100% perfect, setting to `ban` is **NOT RECCOMENDED** in its current state, have some kind of human intervention!
 
+## Customizability
+![image](https://github.com/user-attachments/assets/6da6247f-169a-4fdd-847d-810263355850)
+> Using some of the settings commands, all options are available when you use `v!settings`
+
 ## Potential for larger lists
 - Pedophiles, Weirdos, and other bad actors can be added to the list, VORTH is just how you can describe those people (think of it as a handy umbrella term), anyone banned with that "vorth" tag, has done insanely depolorable things that nobody even wants to learn about. Thats the criteria for adding to the list. Please use your best judgement, or we will
 
