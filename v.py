@@ -342,7 +342,7 @@ async def banlist(ctx):
                 user_ids.append(str(ban_entry.user.id))
 
         if not ban_list:
-            await ctx.send("No bans found with 'vorth' or 'racc' in the reason.")
+            await ctx.send("No bans found.")
             return
 
         pages, message = await create_paginator(ctx, ban_list, user_ids, title)
@@ -432,7 +432,7 @@ async def globalbanlist(ctx):
                     ban_list.append(f":star: {entry}\n")
 
         if not ban_list:
-            await ctx.send("No global bans found with 'vorth' or 'racc' in the reason.")
+            await ctx.send("No global bans found.")
             return
 
         pages, message = await create_paginator(ctx, ban_list, user_ids, title)

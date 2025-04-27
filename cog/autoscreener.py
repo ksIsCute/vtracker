@@ -51,8 +51,8 @@ class AutoScreener(commands.Cog):
             if 'do' not in settings:
                 settings['do'] = 'log'
                 updated = True
-            if 'vorth_logs_channel' not in settings:
-                settings['vorth_logs_channel'] = None
+            if 'logs_channel' not in settings:
+                settings['logs_channel'] = None
                 updated = True
 
         if updated:
@@ -108,7 +108,7 @@ class AutoScreener(commands.Cog):
             self.servers[guild_id] = {
                 "screening": False,
                 "do": "log",
-                "vorth_logs_channel": None
+                "logs_channel": None
             }
             self.save_servers()
             print(f"Auto-added server {guild_id} to servers.json")
@@ -120,7 +120,7 @@ class AutoScreener(commands.Cog):
 
         screening_enabled = server_settings.get('screening', False)
         action = server_settings.get('do', 'kick') if screening_enabled else 'log'
-        logs_channel = self.bot.get_channel(server_settings.get('vorth_logs_channel'))
+        logs_channel = self.bot.get_channel(server_settings.get('logs_channel'))
 
         message = await self._take_action(member, action)
 
@@ -212,7 +212,7 @@ class AutoScreener(commands.Cog):
         for guild_id, settings in self.servers.items():
             screening_status = "✅ Screening" if settings.get('screening', False) else "❌ No Screening"
             action = settings.get('do', 'N/A')
-            logs_channel = settings.get('vorth_logs_channel')
+            logs_channel = settings.get('logs_channel')
 
             description += (
                 f"**Server ID**: `{guild_id}`\n"

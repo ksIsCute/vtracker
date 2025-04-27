@@ -21,17 +21,17 @@ class Settings(commands.Cog):
     @commands.group(name='settings', invoke_without_command=True)
     @commands.has_permissions(manage_guild=True)
     async def settings_group(self, ctx):
-        """Configure Vorth detection settings for your server"""
+        """Configure detection settings for your server"""
         embed = discord.Embed(
-            title="🛠️ Vorth Detection Settings",
-            description="Configure how the bot handles potential Vorth alts in your server.",
+            title="🛠️ Detection Settings",
+            description="Configure how the bot handles potential bad actors in your server.",
             color=discord.Color.blue()
         )
 
         # Get current settings
         guild_id = str(ctx.guild.id)
         settings = self.servers.get(guild_id, {})
-        logs = settings.get("vorth_logs_channel", "Not set")
+        logs = settings.get("logs_channel", "Not set")
 
         embed.add_field(
             name="Current Settings",
@@ -86,7 +86,7 @@ class Settings(commands.Cog):
     @settings_group.command(name='action')
     @commands.has_permissions(manage_guild=True)
     async def action_setting(self, ctx, action: str):
-        """Set what action to take when a potential Vorth alt is detected (ban/kick/log)"""
+        """Set what action to take when a potential bad actor is detected (ban/kick/log)"""
         guild_id = str(ctx.guild.id)
         action = action.lower()
 
@@ -100,7 +100,7 @@ class Settings(commands.Cog):
         # Send confirmation message
         embed = discord.Embed(
             title="✅ Setting Changed",
-            description=f"Action for potential Vorth alts has been set to **{action}**.",
+            description=f"Action for potential bad actors has been set to **{action}**.",
             color=discord.Color.green()
         )
         await ctx.send(embed=embed)
@@ -111,7 +111,7 @@ class Settings(commands.Cog):
         """Set the channel where detection logs will be sent"""
         guild_id = str(ctx.guild.id)
 
-        self.servers.setdefault(guild_id, {})['vorth_logs_channel'] = str(channel.id)
+        self.servers.setdefault(guild_id, {})['logs_channel'] = str(channel.id)
         self.save_settings()
 
         # Send confirmation message
@@ -146,7 +146,7 @@ class Settings(commands.Cog):
             inline=True
         )
 
-        logs_channel = settings.get('vorth_logs_channel')
+        logs_channel = settings.get('logs_channel')
         embed.add_field(
             name="Logs Channel",
             value=f"<#{logs_channel}>" if logs_channel else "Not set",
@@ -185,16 +185,16 @@ class Settings(commands.Cog):
             self.servers[guild_id] = {
                 'screening': False,
                 'do': 'log',
-                'vorth_logs_channel': None
+                'logs_channel': None
             }
             self.save_settings()
 
         # Optionally send welcome message to server admin or log channel
-        logs_channel_id = self.servers[guild_id].get('vorth_logs_channel', None)
+        logs_channel_id = self.servers[guild_id].get('logs_channel', None)
         if logs_channel_id:
             logs_channel = self.bot.get_channel(int(logs_channel_id))
             if logs_channel:
-                await logs_channel.send(f"👋 **New server joined:** {guild.name} - Default Vorth detection settings applied.")
+                await logs_channel.send(f"👋 **New server joined:** {guild.name} - Default detection settings applied.")
 
         print(f"Auto-initialized settings for {guild.name} ({guild.id})")
 
