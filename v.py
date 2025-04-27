@@ -4,9 +4,11 @@ import logging
 from colorama import init, Fore, Style
 import discord
 import io
+import os
 import asyncio
 from datetime import datetime
 from discord.ext import commands
+from difflib import SequenceMatcher
 
 # Initialize colorama
 init(autoreset=True)
@@ -22,6 +24,7 @@ bot = commands.Bot(command_prefix="v!", intents=INTENTS)
 @bot.event
 async def on_ready():
     logger.info(f"{Fore.GREEN}Logged in as {bot.user}{Style.RESET_ALL}")
+    await load_cogs()
 
 # File paths
 CONFIG_FILE = "data/asd.json"
@@ -62,6 +65,10 @@ def save_global_ban_list(ban_list):
     with open(GLOBAL_BAN_LIST_FILE, "w") as f:
         json.dump({"bans": ban_list}, f, indent=4)
 
+async def load_cogs():
+    for filename in os.listdir('./cog'):
+        if filename.endswith('.py'):
+            await bot.load_extension(f'cog.{filename[:-3]}')
 
 async def update_global_ban_list():
     """Update the global ban list by merging all verified servers' bans"""
@@ -436,7 +443,6 @@ async def globalbanlist(ctx):
     finally:
         if ctx.author.id in active_paginators:
             del active_paginators[ctx.author.id]
-
 
 # Run the bot
 TOKEN = load_config().get('vtoken')
