@@ -175,7 +175,7 @@ async def on_message(message):
                 "then right-clicking your server name and selecting 'Copy ID'."
             )
 
-@bot.command(name="syncglobal", aliases=['gb', 'sgb', 'sg'])
+@bot.command(name="syncglobal", aliases=['sgb', 'sg'])
 @commands.has_permissions(administrator=True)
 async def sync_global_ban_list(ctx):
     """Update the global banlist with all verified servers' bans"""
@@ -295,6 +295,7 @@ async def handle_pagination(ctx, message, pages, title):
                 file = io.BytesIO(file_content.encode('utf-8'))
                 await ctx.send(content="📁 Raw ID export:", file=discord.File(file, filename="user_ids.txt"))
 
+
             elif emoji in ["⬅️", "➡️"]:
                 if emoji == "➡️" and current_page < len(pages) - 1:
                     current_page += 1
@@ -308,7 +309,7 @@ async def handle_pagination(ctx, message, pages, title):
         await message.clear_reactions()
 
 
-@bot.command(name="banlist", aliases=['g'])
+@bot.command(name="banlist", aliases=['bans'])
 async def banlist(ctx):
     """Show server bans containing 'vorth' or 'racc' in the reason."""
     global active_paginators, original_ban_data
@@ -405,23 +406,23 @@ async def globalbanlist(ctx):
         active_paginators[ctx.author.id] = None
         title = "Global Ban List"
 
-        global_banlist = load_global_ban_list()
-        bans = global_banlist.get("bans", {})
+
 
         is_verified = ctx.guild.features and 'VERIFIED' in ctx.guild.features
+        title = "The Global Ban List"
+        bans = load_global_ban_list()  # <-- NOT global_banlist.get("bans")
 
         for user_id, ban_data in bans.items():
             reason = ban_data.get("reason", "")
-            servers = ban_data.get("servers", [])
-            name = ban_data.get("name", "Unknown User")
-
             if reason and re.search(r'\b(vorth|racc)\b', reason, re.IGNORECASE):
-                prefix = ""
-                if is_verified and str(ctx.guild.id) not in servers:
-                    prefix = ":star: "
-                entry = f"{prefix}{name} ({user_id}) - Reason: {reason}\n"
-                ban_list.append(entry)
                 user_ids.append(user_id)
+                servers = ban_data.get("servers", [])
+                entry = f"{ban_data['name']} ({user_id}) - Reason: {ban_data['reason']}"
+
+                if str(ctx.guild.id) in servers:
+                    ban_list.append(f":star: {entry}\n")
+                else:
+                    ban_list.append(f"{entry}\n")
 
         if not ban_list:
             await ctx.send("No global bans found with 'vorth' or 'racc' in the reason.")
