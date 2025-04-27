@@ -4,6 +4,14 @@ from difflib import SequenceMatcher
 import discord
 from discord.ext import commands
 
+# File paths
+CONFIG_FILE = "data/asd.json"
+
+def load_config():
+    with open(CONFIG_FILE, "r") as f:
+        return json.load(f)
+
+auditors = load_config()["auditors"]
 
 class AutoScreener(commands.Cog):
     def __init__(self, bot):
@@ -223,6 +231,13 @@ class AutoScreener(commands.Cog):
         """Configure AutoScreener settings"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
+
+    @commands.command(name="update")
+    async def update(self, ctx):
+        """ Update Auditors List """
+        auditors = load_config()["auditors"]
+        await ctx.send(f"There are now {len(auditors)} auditors!")
+        return
 
     @vsettings.command()
     async def action(self, ctx, *, action: str):
