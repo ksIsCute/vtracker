@@ -33,12 +33,6 @@ class AutoScreener(commands.Cog):
             self.verified_servers = set()
             self.banned_name_patterns = set()
 
-    def save_servers(self):
-        """Save updated server settings"""
-        os.makedirs('data', exist_ok=True)
-        with open('data/servers.json', 'w') as f:
-            json.dump(self.servers, f, indent=4)
-
     def validate_servers(self):
         """Ensure all servers have valid default fields"""
         updated = False
@@ -49,15 +43,36 @@ class AutoScreener(commands.Cog):
                 settings['screening'] = False
                 updated = True
             if 'do' not in settings:
-                settings['do'] = 'log'
+                settings['do'] = 'log'  # Default action: log only
                 updated = True
             if 'logs_channel' not in settings:
                 settings['logs_channel'] = None
                 updated = True
 
+            # Validate the action if it exists
+            if 'do' in settings:
+                action = settings['do']
+                if not self._is_valid_action(action):
+                    settings['do'] = 'log'  # Reset to default if invalid
+                    updated = True
+
         if updated:
             self.save_servers()
             print("✅ Fixed missing fields in servers.json")
+
+    def _is_valid_action(self, action):
+        """Check if an action string is valid"""
+        if action in ['ban', 'kick', 'log']:
+            return True
+
+        # Check for combined actions
+        parts = [part.strip() for part in action.split(',')]
+        if len(parts) == 2:
+            if (parts[0] in ['ban', 'kick'] and parts[1] == 'log') or \
+                    (parts[1] in ['ban', 'kick'] and parts[0] == 'log'):
+                return True
+
+        return False
 
     def _extract_name_patterns(self):
         """Extract patterns from banned names"""
@@ -107,7 +122,7 @@ class AutoScreener(commands.Cog):
         if guild_id not in self.servers:
             self.servers[guild_id] = {
                 "screening": False,
-                "do": "log",
+                "do": "log",  # Default action is to log
                 "logs_channel": None
             }
             self.save_servers()
@@ -119,7 +134,7 @@ class AutoScreener(commands.Cog):
             return
 
         screening_enabled = server_settings.get('screening', False)
-        action = server_settings.get('do', 'kick') if screening_enabled else 'log'
+        action = server_settings.get('do', 'log') if screening_enabled else 'log'
         logs_channel = self.bot.get_channel(server_settings.get('logs_channel'))
 
         message = await self._take_action(member, action)
@@ -133,20 +148,38 @@ class AutoScreener(commands.Cog):
     async def _take_action(self, member, action):
         """Execute the appropriate moderation action"""
         reason = "Potential banned user pattern match"
+        message = ""
+        actions_taken = []
 
-        try:
-            if action == 'ban':
-                await member.ban(reason=reason)
-                return f"🚨 **Banned potential banned user**: {member.mention} (`{member.name}`)"
-            elif action == 'kick':
-                await member.kick(reason=reason)
-                return f"🚨 **Kicked potential banned user**: {member.mention} (`{member.name}`)"
-            else:
-                return f"⚠️ **Potential banned user detected**: {member.mention} (`{member.name}`)"
-        except discord.Forbidden:
-            return f"❌ **Failed to {action} potential banned user**: {member.mention} - Missing permissions"
-        except Exception as e:
-            return f"❌ **Error processing {member.mention}**: {str(e)}"
+        # Split combined actions
+        actions = [a.strip() for a in action.split(',')]
+
+        for action in actions:
+            try:
+                if action == 'ban':
+                    await member.ban(reason=reason)
+                    actions_taken.append('banned')
+                elif action == 'kick':
+                    await member.kick(reason=reason)
+                    actions_taken.append('kicked')
+                elif action == 'log':
+                    actions_taken.append('logged')
+            except discord.Forbidden:
+                actions_taken.append(f"failed to {action} (missing permissions)")
+            except Exception as e:
+                actions_taken.append(f"error during {action} ({str(e)})")
+
+        if not actions_taken:
+            return f"⚠️ **Potential banned user detected**: {member.mention} (`{member.name}`)"
+
+        # Format the message based on actions taken
+        actions_str = ", ".join(actions_taken).replace("_", " ")
+        return f"🚨 **{actions_str.capitalize()} potential banned user**: {member.mention} (`{member.name}`)"
+
+    def save_servers(self):
+        """Save server settings to file"""
+        with open('data/servers.json', 'w') as f:
+            json.dump(self.servers, f, indent=2)
 
     def is_verified_server(self, ctx):
         """Check if the command is run in a verified server"""
@@ -154,12 +187,85 @@ class AutoScreener(commands.Cog):
 
     def verified_only():
         """Custom check decorator"""
+
         async def predicate(ctx):
             cog = ctx.cog
             if cog is None:
                 return False
             return cog.is_verified_server(ctx)
+
         return commands.check(predicate)
+
+    @commands.group()
+    @commands.has_permissions(manage_guild=True)
+    @verified_only()
+    async def vsettings(self, ctx):
+        """Configure AutoScreener settings"""
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    @vsettings.command()
+    async def action(self, ctx, *, action: str):
+        """Set the action to take when a banned user is detected (ban, kick, log, or combinations like ban,log)"""
+        action = action.lower().strip()
+
+        if not self._is_valid_action(action):
+            await ctx.send("Invalid action. Use [ban], [kick], [log], or combinations like [ban,log] or [kick,log]")
+            return
+
+        guild_id = str(ctx.guild.id)
+        if guild_id not in self.servers:
+            self.servers[guild_id] = {
+                "screening": False,
+                "do": "log",
+                "logs_channel": None
+            }
+
+        self.servers[guild_id]['do'] = action
+        self.save_servers()
+        await ctx.send(f"✅ Action set to: `{action}`")
+
+    @vsettings.command()
+    async def screening(self, ctx, state: str):
+        """Enable or disable screening (on/off)"""
+        guild_id = str(ctx.guild.id)
+        if guild_id not in self.servers:
+            self.servers[guild_id] = {
+                "screening": False,
+                "do": "log",
+                "logs_channel": None
+            }
+
+        if state.lower() in ['on', 'enable', 'true']:
+            self.servers[guild_id]['screening'] = True
+            self.save_servers()
+            await ctx.send("✅ Screening enabled")
+        elif state.lower() in ['off', 'disable', 'false']:
+            self.servers[guild_id]['screening'] = False
+            self.save_servers()
+            await ctx.send("✅ Screening disabled")
+        else:
+            await ctx.send("Invalid state. Use [on/off]")
+
+    @vsettings.command()
+    async def logchannel(self, ctx, channel: discord.TextChannel = None):
+        """Set the log channel for screening notifications"""
+        guild_id = str(ctx.guild.id)
+        if guild_id not in self.servers:
+            self.servers[guild_id] = {
+                "screening": False,
+                "do": "log",
+                "logs_channel": None
+            }
+
+        if channel is None:
+            self.servers[guild_id]['logs_channel'] = None
+            self.save_servers()
+            await ctx.send("✅ Log channel cleared")
+        else:
+            self.servers[guild_id]['logs_channel'] = channel.id
+            self.save_servers()
+            await ctx.send(f"✅ Log channel set to {channel.mention}")
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
@@ -214,16 +320,17 @@ class AutoScreener(commands.Cog):
             action = settings.get('do', 'N/A')
             logs_channel = settings.get('logs_channel')
 
+            logging_status = "Logging disabled" if action == "kick" else f"Logs Channel: {logs_channel if logs_channel else 'None'}"
+
             description += (
                 f"**Server ID**: `{guild_id}`\n"
                 f"- Status: {screening_status}\n"
                 f"- Action: `{action}`\n"
-                f"- Logs Channel: {logs_channel if logs_channel else 'None'}\n\n"
+                f"- {logging_status}\n\n"
             )
 
-        # Split message if too long for Discord (optional, not needed unless your list is massive)
+        # Split message if too long for Discord
         if len(description) > 2000:
-            # In real big bots you'd paginate, but you're probably fine for now
             await ctx.send("⚠️ Too many servers to list!")
             return
 
