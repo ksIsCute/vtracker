@@ -311,7 +311,7 @@ async def banlist(ctx, globa: str = ""):
         }
 
         # Add reactions
-        reactions = ["🔼", "❌"]
+        reactions = ["🔼", "🗒️", "❌"]
         if len(pages) > 1:
             reactions.extend(["⬅️", "➡️"])
 
@@ -320,7 +320,7 @@ async def banlist(ctx, globa: str = ""):
 
         def check(reaction, user):
             return (user == ctx.author and
-                    str(reaction.emoji) in ["⬅️", "➡️", "🔼", "❌"] and
+                    str(reaction.emoji) in ["⬅️", "➡️", "🔼", "❌", "🗒️"] and
                     reaction.message.id == message.id)
 
         current_page = 0
@@ -333,11 +333,21 @@ async def banlist(ctx, globa: str = ""):
                     await message.delete()
                     break
 
+
                 elif emoji == "🔼":
+                    file_content = "\n".join(ban_list)
+                    file = io.BytesIO(file_content.encode('utf-8'))
+
+                    await ctx.send(
+                        content=f"📁 Organized Vlist export *({len(ban_list)} entries)*:",
+                        file=discord.File(file, filename="ban_list.txt")
+                    )
+
+                elif emoji == "🗒️":
                     file_content = "\n".join(user_ids)
                     file = io.BytesIO(file_content.encode('utf-8'))
                     await ctx.send(
-                        content=f"📁 Raw list export *({len(ban_list)} entries)*:",
+                        content=f"📁 Raw Vlist export *({len(ban_list)} entries)*:",
                         file=discord.File(file, filename="ban_list.txt")
                     )
 
@@ -483,7 +493,7 @@ async def banlist_all(ctx, globa: str = ""):
         }
 
         # Add reactions
-        reactions = ["🔼", "❌", "🗒️"]
+        reactions = ["🔼", "🗒️", "❌"]
         if len(pages) > 1:
             reactions.extend(["⬅️", "➡️"])
 
@@ -509,14 +519,14 @@ async def banlist_all(ctx, globa: str = ""):
                     file_content = "\n".join(ban_list)
                     file = io.BytesIO(file_content.encode('utf-8'))
                     await ctx.send(
-                        content=f"📁 Raw list export *({len(ban_list)} entries)*:",
+                        content=f"📁 Organized **FULL** list export *({len(ban_list)} entries)*:",
                         file=discord.File(file, filename="ban_list.txt")
                     )
                 elif emoji == "🗒️":
                     file_content = "\n".join(user_ids)
                     file = io.BytesIO(file_content.encode('utf-8'))
                     await ctx.send(
-                        content=f"📁 Raw list export *({len(ban_list)} entries)*:",
+                        content=f"📁 Raw **FULL** list export *({len(ban_list)} entries)*:",
                         file=discord.File(file, filename="ban_list.txt")
                     )
 
