@@ -32,6 +32,7 @@ VERIFIED_SERVERS_FILE = "data/verified_servers.json"
 GLOBAL_BAN_LIST_FILE = "data/global_ban_list.json"
 
 # Global tracking variables
+auditors = [814226043924643880, 1329933418427056191, 837048825859538995]
 active_paginators = {}  # {user_id: message_id}
 original_ban_data = {}  # {message_id: {'user_ids': [], 'ban_list': [], 'timestamp': datetime}}
 
@@ -234,16 +235,19 @@ async def mass_ban(ctx, confirm: str = None):
     await ctx.send(f"Mass ban completed. Success: {success}, Failed: {failed}")
 
 @bot.command(name="verify")
-@commands.is_owner()
 async def _verify(ctx, server_id: str):
-    """Verify a server, owner only."""
-    verified_servers = load_verified_servers()
+    """Verify a server, auditor only."""
+    if ctx.author.id in auditors:
+        verified_servers = load_verified_servers()
 
-    if server_id not in verified_servers:
-        verified_servers.append(server_id)
-        save_verified_servers(verified_servers)
-        server = bot.get_guild(int(server_id))
-        logger.info(f"Added new verified server: {server.name} ({server.id})")
+        if server_id not in verified_servers:
+            verified_servers.append(server_id)
+            save_verified_servers(verified_servers)
+            server = bot.get_guild(int(server_id))
+            logger.info(f"Added new verified server: {server.name} ({server.id})")
+            return await ctx.send(f"Added new verified server: {server.name} ({server.id})")
+    else:
+        return await ctx.send("You are not authorized to use this command.")
 
 async def create_paginator(ctx, ban_list, user_ids, title):
     pages = []
