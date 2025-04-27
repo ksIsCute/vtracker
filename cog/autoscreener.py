@@ -93,7 +93,14 @@ class AutoScreener(commands.Cog):
 
     def _extract_name_patterns(self):
         """Extract patterns from banned names"""
-        banned_names = [account['name'].lower() for account in self.banned_accounts.values()]
+        banned_names = []
+
+        # Ensure 'name' key exists in each banned account before accessing
+        for account in self.banned_accounts.values():
+            name = account.get('name')
+            if name:
+                banned_names.append(name.lower())
+
         self.banned_name_patterns = set()
 
         for name in banned_names:
