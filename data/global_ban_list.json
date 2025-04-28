@@ -1,8 +1,19 @@
 {
     "bans": {
+        "442123490661761035": {
+            "name": "crumba_",
+            "reason": "Global ban: User Responsible: undone__action / in racc server",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
         "677296923698397223": {
             "name": "d.g2",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -12,7 +23,7 @@
         },
         "725051077279350896": {
             "name": "blue5255",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -24,7 +35,7 @@
         },
         "751697685370634290": {
             "name": "benjda20006",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -34,7 +45,7 @@
         },
         "795541426057773087": {
             "name": "notnotnot0",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -45,7 +56,7 @@
         },
         "818891712935493653": {
             "name": "3kaw",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -56,7 +67,17 @@
         },
         "841905535041536050": {
             "name": "pakistanzindabad1947",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "875204634749321278": {
+            "name": "jakkx34.",
+            "reason": "Vorth alt ",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -66,7 +87,7 @@
         },
         "908733397311041606": {
             "name": ".pizzasteve.",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -76,7 +97,7 @@
         },
         "1002180181970145371": {
             "name": "deezmabust3043",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -86,7 +107,7 @@
         },
         "1182746678554542140": {
             "name": "femboyfederalagent",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "User Responsible: bigpoosock / vorth alt",
             "servers": [
                 "1259717095382319215",
                 "1027605451996667944"
@@ -94,15 +115,34 @@
         },
         "1201503390677598271": {
             "name": "_penknife",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1299747094449623111"
             ]
         },
+        "1205864958412193814": {
+            "name": "fbiagentj4453t",
+            "reason": "Vorth alt ",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1246134350035292254": {
+            "name": "kuccgilar",
+            "reason": "User Responsible: bigpoosock / vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "1027605451996667944"
+            ]
+        },
         "1252995051294953525": {
             "name": "huskyinsnow",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -112,7 +152,7 @@
         },
         "1274242833167028296": {
             "name": "romanian_1",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -122,7 +162,7 @@
         },
         "1284646759280148622": {
             "name": "newusr",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -133,7 +173,7 @@
         },
         "1307693264392159306": {
             "name": "lunargametasty",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "User Responsible: bigpoosock / vorth alt",
             "servers": [
                 "1259717095382319215",
                 "1299747094449623111",
@@ -143,7 +183,7 @@
         },
         "1307694705923985442": {
             "name": "doorstepjumpruby",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -153,7 +193,7 @@
         },
         "1307695920976101517": {
             "name": "icingdismissmyth",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "User Responsible: bigpoosock / vorth alt",
             "servers": [
                 "1259717095382319215",
                 "1299747094449623111",
@@ -161,9 +201,111 @@
                 "1027605451996667944"
             ]
         },
+        "1307697439561617424": {
+            "name": "racc23",
+            "reason": "vorth",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1309971851962744942": {
+            "name": "racc910",
+            "reason": "User Responsible: bigpoosock / vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "1027605451996667944"
+            ]
+        },
+        "1310189983247896600": {
+            "name": "cokeciy638",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1311048240145367105": {
+            "name": "niggerkiller7827.",
+            "reason": "User Responsible: bigpoosock / vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "902746055035219968",
+                "1027605451996667944"
+            ]
+        },
+        "1311390044904357989": {
+            "name": "sksjdh0009",
+            "reason": "Global ban: vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
+        "1312157359141032058": {
+            "name": "lllelelelelelelelelelelelelelele",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1312163184429367491": {
+            "name": "racc5493",
+            "reason": "User Responsible: woolen_aura / Vorth (Hardban issued)",
+            "servers": [
+                "1259717095382319215"
+            ]
+        },
+        "1312332947004854283": {
+            "name": "racc231",
+            "reason": "vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1312335146988343296": {
+            "name": "racc2034",
+            "reason": "User Responsible: bigpoosock / vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1027605451996667944"
+            ]
+        },
+        "1312368788427116594": {
+            "name": "raccbigdih",
+            "reason": "Vorth alt ",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1312376661022478347": {
+            "name": "racc745",
+            "reason": "Global ban: User Responsible: woolen_aura / Vorth (Hardban issued)",
+            "servers": [
+                "1259717095382319215",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
         "1312518514069999691": {
             "name": "racc59",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -173,9 +315,9 @@
                 "1027605451996667944"
             ]
         },
-        "1313055700624212030": {
-            "name": "racc905",
-            "reason": "User Responsible: moneyoverlove. / hi vorth (Hardban issued)",
+        "1313054745207898115": {
+            "name": "racc888",
+            "reason": "User Responsible: bigpoosock / vorth alt",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -183,9 +325,30 @@
                 "1027605451996667944"
             ]
         },
+        "1313055700624212030": {
+            "name": "racc905",
+            "reason": "User Responsible: bigpoosock / vorth alt (Hardban issued)",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1027605451996667944"
+            ]
+        },
+        "1313056393695072328": {
+            "name": "racc1132",
+            "reason": "Global ban: vorth",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
         "1313531118057685023": {
             "name": "federalagentdogie",
-            "reason": "User Responsible: loveovermoney / hi vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: loveovermoney / hi vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1299747094449623111",
@@ -193,9 +356,91 @@
                 "1027605451996667944"
             ]
         },
+        "1314631588818059368": {
+            "name": "mygorgeousskibiditoilet",
+            "reason": "Global ban: vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
+        "1315325714496753685": {
+            "name": "zenith_67.",
+            "reason": "Global ban: probably a vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
+        "1318822530101809214": {
+            "name": "kucc32079",
+            "reason": "Global ban: User Responsible: michaelinsidemymind / cp sent and vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
+        "1319744104782893057": {
+            "name": "kucc92033",
+            "reason": "User Responsible: bigpoosock / vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1027605451996667944"
+            ]
+        },
+        "1326207528861962393": {
+            "name": "racc113",
+            "reason": "User Responsible: cobra_tc / RACC cp dealer/raider",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968",
+                "1027605451996667944"
+            ]
+        },
+        "1326222011063734317": {
+            "name": "raccporn",
+            "reason": "Global ban: hi vorth",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1329254851682504766": {
+            "name": "racc1c",
+            "reason": "vorth",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111"
+            ]
+        },
+        "1330546821780476016": {
+            "name": "mynameisntimportant.",
+            "reason": "vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
         "1335533217331150859": {
             "name": "sillyhighcummand",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -206,7 +451,7 @@
         },
         "1335701632062591099": {
             "name": "raccwithlongahhdih",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -218,7 +463,7 @@
         },
         "1337487292625059922": {
             "name": "racchighcommand2",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Vorth Alt ",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -229,7 +474,7 @@
         },
         "1337492775658328074": {
             "name": "rtvgs11238",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -239,7 +484,7 @@
         },
         "1337713481163472958": {
             "name": "wyhighcommand7",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Vorth alt ",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -248,9 +493,16 @@
                 "1027605451996667944"
             ]
         },
+        "1338174442752315415": {
+            "name": "rcurcurcu",
+            "reason": "User Responsible: tsukamilmao / Vorth alt (Fatass incel kill yourself lol) (Hardban issued)",
+            "servers": [
+                "1259717095382319215"
+            ]
+        },
         "1338175913753579545": {
             "name": "raccsp95",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -262,7 +514,7 @@
         },
         "1338179648671977523": {
             "name": "jesusandallah",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -272,7 +524,7 @@
         },
         "1338539295601852497": {
             "name": "boo.nme",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -283,7 +535,7 @@
         },
         "1338598861203050496": {
             "name": "het0752888",
-            "reason": "User Responsible: sirektt / I THINK.. THATS.. VORTH!? EVERYBODY RUN!!!",
+            "reason": "Global ban: User Responsible: sirektt / I THINK.. THATS.. VORTH!? EVERYBODY RUN!!!",
             "servers": [
                 "1259717095382319215",
                 "1299747094449623111",
@@ -293,7 +545,7 @@
         },
         "1340280188532953098": {
             "name": "ritalinvoen",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -303,7 +555,7 @@
         },
         "1342541326842855475": {
             "name": "racc949",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Vorth alt ",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -314,7 +566,7 @@
         },
         "1345150558704504832": {
             "name": "napkinz.j",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -326,7 +578,7 @@
         },
         "1345351239512227883": {
             "name": "cumseverywhere",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -338,7 +590,7 @@
         },
         "1345352006373740605": {
             "name": "yng207",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -348,7 +600,7 @@
         },
         "1347216114266144917": {
             "name": ".felicia.tha.goat.",
-            "reason": "User Responsible: tsukamilmao / Vorth probably (Weird bio anyhow)",
+            "reason": "Global ban: User Responsible: tsukamilmao / Vorth probably (Weird bio anyhow)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -357,9 +609,19 @@
                 "1027605451996667944"
             ]
         },
+        "1347692669190537288": {
+            "name": "kucc0288",
+            "reason": "Global ban: Vorth",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
         "1347697693639835688": {
             "name": "racc1603",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -371,7 +633,17 @@
         },
         "1348321543746490508": {
             "name": "blahduck",
-            "reason": "User Responsible: ks.net / holy vorth alt",
+            "reason": "Global ban: User Responsible: ks.net / holy vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1348326088815935509": {
+            "name": "sillygirlll.",
+            "reason": "Global ban: Vorth",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -381,7 +653,7 @@
         },
         "1348328673820020746": {
             "name": "unsoldplow",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -391,7 +663,7 @@
         },
         "1348337280313593953": {
             "name": "stealthhiv",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -401,7 +673,7 @@
         },
         "1348540523559780385": {
             "name": "sigmaizuysumi",
-            "reason": "User Responsible: snobwanker / vorth",
+            "reason": "Global ban: User Responsible: snobwanker / vorth",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -411,7 +683,7 @@
         },
         "1348542530756673608": {
             "name": "het0752.sslut",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -420,9 +692,9 @@
                 "902746055035219968"
             ]
         },
-        "1349373478309986404": {
-            "name": "sp18274638",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+        "1348551431619088497": {
+            "name": "kuccwithlongahhdih",
+            "reason": "Global ban: Vorth",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -430,9 +702,30 @@
                 "902746055035219968"
             ]
         },
+        "1349373478309986404": {
+            "name": "sp18274638",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
+            ]
+        },
+        "1350040957030240267": {
+            "name": "yuran_srrrr3747",
+            "reason": "Global ban: User Responsible: gruchronic / vorth alt",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
         "1350897499472400404": {
             "name": "pussynuker4",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -443,7 +736,7 @@
         },
         "1351552605020487772": {
             "name": "het0752.sslut7273",
-            "reason": "User Responsible: am2thyst / vorth",
+            "reason": "User Responsible: plkaz / racc",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -454,7 +747,7 @@
         },
         "1351958796343312436": {
             "name": "wy17274",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -464,7 +757,7 @@
         },
         "1353344859154546688": {
             "name": "aloft0156",
-            "reason": "User Responsible: ks.net / vorth alt (Hardban issued)",
+            "reason": "Global ban: User Responsible: ks.net / vorth alt (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -475,7 +768,7 @@
         },
         "1353792461394415717": {
             "name": "mydadlivesinmybody",
-            "reason": "User Responsible: am2thyst / vorth",
+            "reason": "Global ban: User Responsible: am2thyst / vorth",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -485,7 +778,7 @@
         },
         "1353803383223484417": {
             "name": "pussynuker3204",
-            "reason": "User Responsible: tsukamilmao / Vorth alt",
+            "reason": "Global ban: User Responsible: tsukamilmao / Vorth alt",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -495,7 +788,7 @@
         },
         "1354112113978904658": {
             "name": "kinejo",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -503,9 +796,20 @@
                 "902746055035219968"
             ]
         },
+        "1354123845480743046": {
+            "name": "pussynuker.",
+            "reason": "Global ban: User Responsible: sylophobia / alt for nuking, def racc tryna farm levels",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
         "1354880869827088496": {
             "name": "pedophileprophetmuhammad",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -516,7 +820,7 @@
         },
         "1358075905901330442": {
             "name": "stevestevestevebanjo",
-            "reason": "User Responsible: am2thyst / vorth",
+            "reason": "Global ban: User Responsible: am2thyst / vorth",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -524,9 +828,17 @@
                 "902746055035219968"
             ]
         },
+        "1358079316746834041": {
+            "name": "dihimcokbyk",
+            "reason": "User Responsible: oeif / racc?",
+            "servers": [
+                "1259717095382319215",
+                "1302640690005541005"
+            ]
+        },
         "1358080613814505766": {
             "name": "bomboclathi",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -537,7 +849,7 @@
         },
         "1358081809467969760": {
             "name": "gagagdhfhjf",
-            "reason": "User Responsible: sonbeater / Vorth",
+            "reason": "Global ban: User Responsible: sonbeater / Vorth",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -548,7 +860,7 @@
         },
         "1360306279112769547": {
             "name": "raccss729",
-            "reason": "User Responsible: ks.net / hi vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: ks.net / hi vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -558,7 +870,7 @@
         },
         "1364564458969497651": {
             "name": "silly.37",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -569,7 +881,7 @@
         },
         "1364565597022584915": {
             "name": "silly.36",
-            "reason": "User Responsible: ks.net / hi vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: ks.net / hi vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -580,7 +892,7 @@
         },
         "1365184890567524433": {
             "name": "randomseller22_",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+            "reason": "Global ban: User Responsible: woolen_aura / vorth (Hardban issued)",
             "servers": [
                 "1259717095382319215",
                 "1142088882222022786",
@@ -588,355 +900,92 @@
                 "902746055035219968"
             ]
         },
-        "1307697439561617424": {
-            "name": "racc23",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
+        "1365215648606588982": {
+            "name": "wha42highcummand",
+            "reason": "Global ban: User Responsible: sylophobia / racc",
             "servers": [
                 "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
+                "1142088882222022786",
+                "1299747094449623111",
+                "902746055035219968"
             ]
         },
-        "1231889211888631888": {
-            "name": "gt.yh",
-            "reason": "vorthh alt",
+        "1365737912217501789": {
+            "name": "coleteh",
+            "reason": "Global ban: User Responsible: bossymanipulator / racc",
+            "servers": [
+                "1259717095382319215",
+                "1142088882222022786",
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
+            ]
+        },
+        "1365974630833197166": {
+            "name": "racciscumming",
+            "reason": "User Responsible: sylophobia / racc alt",
+            "servers": [
+                "1259717095382319215",
+                "1302640690005541005"
+            ]
+        },
+        "1366102109199794186": {
+            "name": "rcuno912",
+            "reason": "User Responsible: sylophobia / racc aka vorth",
+            "servers": [
+                "1259717095382319215"
+            ]
+        },
+        "1083573629503144026": {
+            "name": "meta000002",
+            "reason": "Global ban: User Responsible: cookroadkill / tried to buy cp from vorth lol (Hardban issued)",
             "servers": [
                 "1142088882222022786",
-                "1259717095382319215"
+                "1299747094449623111",
+                "1302640690005541005",
+                "902746055035219968"
             ]
         },
         "1311373421438959706": {
             "name": "mntz.3",
-            "reason": "Blud literally confirmed that he's vorth in my dms",
+            "reason": "User Responsible: shelovesmetoomuch / hi vorth",
             "servers": [
                 "1142088882222022786",
                 "902746055035219968",
                 "1027605451996667944"
             ]
         },
-        "1311390044904357989": {
-            "name": "sksjdh0009",
-            "reason": "vorth alt",
-            "servers": [
-                "1142088882222022786",
-                "1259717095382319215",
-                "1302640690005541005",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1326222011063734317": {
-            "name": "raccporn",
-            "reason": "hi vorth",
-            "servers": [
-                "1142088882222022786",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1329254851682504766": {
-            "name": "racc1c",
-            "reason": "vorth",
-            "servers": [
-                "1299747094449623111",
-                "1259717095382319215",
-                "1142088882222022786"
-            ]
-        },
-        "1347692669190537288": {
-            "name": "kucc0288",
-            "reason": "Vorth",
-            "servers": [
-                "1299747094449623111",
-                "1259717095382319215",
-                "1142088882222022786",
-                "902746055035219968"
-            ]
-        },
-        "1348326088815935509": {
-            "name": "sillygirlll.",
-            "reason": "Vorth",
-            "servers": [
-                "1299747094449623111",
-                "1259717095382319215",
-                "1142088882222022786",
-                "902746055035219968"
-            ]
-        },
-        "1348551431619088497": {
-            "name": "kuccwithlongahhdih",
-            "reason": "Vorth",
-            "servers": [
-                "1299747094449623111",
-                "1259717095382319215",
-                "1142088882222022786",
-                "902746055035219968"
-            ]
-        },
-        "1246134350035292254": {
-            "name": "kuccgilar",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
-            "servers": [
-                "1259717095382319215",
-                "1027605451996667944",
-                "1299747094449623111"
-            ]
-        },
-        "1309971851962744942": {
-            "name": "racc910",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
-            "servers": [
-                "1259717095382319215",
-                "1027605451996667944",
-                "1299747094449623111"
-            ]
-        },
-        "1310189983247896600": {
-            "name": "cokeciy638",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
-            "servers": [
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1311048240145367105": {
-            "name": "niggerkiller7827.",
-            "reason": "User Responsible: woolen_aura / Vorth (Hardban issued)",
-            "servers": [
-                "1259717095382319215",
-                "902746055035219968",
-                "1027605451996667944",
-                "1299747094449623111"
-            ]
-        },
-        "1312157359141032058": {
-            "name": "lllelelelelelelelelelelelelelele",
-            "reason": "User Responsible: woolen_aura / vorth (Hardban issued)",
-            "servers": [
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1312163184429367491": {
-            "name": "racc5493",
-            "reason": "User Responsible: woolen_aura / Vorth (Hardban issued)",
-            "servers": [
-                "1259717095382319215"
-            ]
-        },
-        "1312376661022478347": {
-            "name": "racc745",
-            "reason": "User Responsible: woolen_aura / Vorth (Hardban issued)",
-            "servers": [
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1083573629503144026": {
-            "name": "meta000002",
-            "reason": "User Responsible: cookroadkill / tried to buy cp from vorth lol (Hardban issued)",
-            "servers": [
-                "1302640690005541005",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1313056393695072328": {
-            "name": "racc1132",
-            "reason": "vorth",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1314631588818059368": {
-            "name": "mygorgeousskibiditoilet",
-            "reason": "vorth alt",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1315325714496753685": {
-            "name": "zenith_67.",
-            "reason": "probably a vorth alt",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1318822530101809214": {
-            "name": "kucc32079",
-            "reason": "User Responsible: michaelinsidemymind / cp sent and vorth alt",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1350040957030240267": {
-            "name": "yuran_srrrr3747",
-            "reason": "User Responsible: gruchronic / vorth alt",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1365215648606588982": {
-            "name": "wha42highcummand",
-            "reason": "User Responsible: sylophobia / racc",
-            "servers": [
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "442123490661761035": {
-            "name": "crumba_",
-            "reason": "User Responsible: undone__action / in racc server",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
         "1353766172905967678": {
             "name": "bluesberrybreddy",
-            "reason": "User Responsible: undone__action / in racc server",
+            "reason": "Global ban: User Responsible: undone__action / in racc server",
             "servers": [
+                "1142088882222022786",
+                "1299747094449623111",
                 "1302640690005541005",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1354123845480743046": {
-            "name": "pussynuker.",
-            "reason": "User Responsible: sylophobia / alt for nuking, def racc tryna farm levels",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "1365737912217501789": {
-            "name": "coleteh",
-            "reason": "User Responsible: bossymanipulator / racc",
-            "servers": [
-                "1302640690005541005",
-                "1259717095382319215",
-                "902746055035219968",
-                "1299747094449623111"
-            ]
-        },
-        "875204634749321278": {
-            "name": "jakkx34.",
-            "reason": "Vorth alt ",
-            "servers": [
-                "902746055035219968",
-                "1259717095382319215",
-                "1299747094449623111"
-            ]
-        },
-        "1205864958412193814": {
-            "name": "fbiagentj4453t",
-            "reason": "Vorth alt ",
-            "servers": [
-                "902746055035219968",
-                "1259717095382319215",
-                "1299747094449623111"
-            ]
-        },
-        "1312332947004854283": {
-            "name": "racc231",
-            "reason": "vorth alt",
-            "servers": [
-                "902746055035219968",
-                "1259717095382319215",
-                "1299747094449623111"
-            ]
-        },
-        "1312368788427116594": {
-            "name": "raccbigdih",
-            "reason": "Vorth alt ",
-            "servers": [
-                "902746055035219968",
-                "1259717095382319215",
-                "1299747094449623111"
-            ]
-        },
-        "1326207528861962393": {
-            "name": "racc113",
-            "reason": "Vorth alt ",
-            "servers": [
-                "902746055035219968",
-                "1027605451996667944",
-                "1259717095382319215",
-                "1299747094449623111"
-            ]
-        },
-        "1330546821780476016": {
-            "name": "mynameisntimportant.",
-            "reason": "vorth alt",
-            "servers": [
-                "902746055035219968",
-                "1259717095382319215",
-                "1299747094449623111"
+                "902746055035219968"
             ]
         },
         "1311323339171827718": {
             "name": ".3u3r3s",
             "reason": "User Responsible: bigpoosock / vorth alt",
             "servers": [
-                "1027605451996667944",
-                "1299747094449623111"
+                "1299747094449623111",
+                "1027605451996667944"
             ]
         },
-        "1312335146988343296": {
-            "name": "racc2034",
-            "reason": "User Responsible: bigpoosock / vorth alt",
+        "1365972342236381225": {
+            "name": "raccmango",
+            "reason": "User Responsible: gammar4ys / racc",
             "servers": [
-                "1027605451996667944",
-                "1259717095382319215",
-                "1299747094449623111"
+                "1302640690005541005"
             ]
         },
-        "1313054745207898115": {
-            "name": "racc888",
-            "reason": "User Responsible: bigpoosock / vorth alt",
+        "1365977458125312021": {
+            "name": "raccandlalalalaalwaysforever",
+            "reason": "User Responsible: gammar4ys / racc",
             "servers": [
-                "1027605451996667944",
-                "1259717095382319215",
-                "1299747094449623111"
+                "1302640690005541005"
             ]
-        },
-        "1319744104782893057": {
-            "name": "kucc92033",
-            "reason": "User Responsible: bigpoosock / vorth alt",
-            "servers": [
-                "1027605451996667944",
-                "1259717095382319215"
-            ]
-        },
-        "814226043924643880": {
-            "reason": "pee"
-        },
-        "814226043924643880": {
-            "reason": "pee"
         }
     }
 }

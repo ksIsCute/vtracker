@@ -100,21 +100,25 @@ class AutoScreener(commands.Cog):
             name = account.get('name')
             if name:
                 banned_names.append(name.lower())
+            else:
+                name = False
+                continue
 
-        self.banned_name_patterns = set()
+        if name:
+            self.banned_name_patterns = set()
 
-        for name in banned_names:
-            parts = []
-            for sep in ['_', '.', '-', ' ']:
-                if sep in name:
-                    parts.extend(name.split(sep))
+            for name in banned_names:
+                parts = []
+                for sep in ['_', '.', '-', ' ']:
+                    if sep in name:
+                        parts.extend(name.split(sep))
 
-            if not parts:
-                parts = [name]
+                if not parts:
+                    parts = [name]
 
-            for part in parts:
-                if len(part) >= 3:
-                    self.banned_name_patterns.add(part)
+                for part in parts:
+                    if len(part) >= 3:
+                        self.banned_name_patterns.add(part)
 
     def is_similar_name(self, name, guild_id):
         """Check if name matches any banned patterns, excluding whitelisted users"""

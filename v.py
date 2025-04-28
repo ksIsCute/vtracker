@@ -23,6 +23,7 @@ INTENTS = discord.Intents.all()
 INTENTS.bans = True # Explicitly ensure bans intent is enabled
 
 bot = commands.Bot(command_prefix="v!", intents=INTENTS)
+bot.remove_command("help")
 
 @bot.event
 async def on_ready():
@@ -341,6 +342,91 @@ async def on_message(message):
              logger.error(f"Error processing DM from {message.author}: {e}")
              await message.channel.send("❌ An unexpected error occurred. Please try again later or contact support.")
 
+# --- Categorization mapping ---
+CATEGORIES = {
+    "Configuration": ["settings", "vsettings", "reloadservers"],
+    "Ban Management": ["reloadbans", "banlist", "banlist_all", "globalbanlist", "add_to_banlist", "remove_from_banlist", "suggest_remove_from_banlist"],
+    "Global Ban Actions": ["massban", "synclocal", "syncglobal"],
+    "Verification Management": ["verify", "unverify", "reject"],
+    "Auditor Management": ["auditor", "strip", "listauditors", "update"],
+    "Utilities": ["checkname", "listservers", "help"]
+}
+
+# --- Main help command group ---
+@bot.group(invoke_without_command=True)
+async def help(ctx, *, command_name: str = None):
+    if command_name:
+        command = bot.get_command(command_name)
+        if command:
+            embed = discord.Embed(
+                title=f"Command: {ctx.prefix}{command.name}",
+                description=command.help or "No description provided.",
+                color=discord.Color.blurple()
+            )
+            aliases = ", ".join(command.aliases) if command.aliases else "None"
+            embed.add_field(name="Aliases", value=aliases, inline=False)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(f"No command called `{command_name}` found.")
+    else:
+        embed = discord.Embed(
+            title="Help Menu",
+            description=f"Use `{ctx.prefix}help <category>` to see commands in that category.\nUse `{ctx.prefix}help <command>` for details on a command.",
+            color=discord.Color.blurple()
+        )
+
+        for category, commands_list in CATEGORIES.items():
+            embed.add_field(
+                name=category,
+                value=", ".join(f"`{cmd}`" for cmd in commands_list),
+                inline=False
+            )
+
+        embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
+        await ctx.send(embed=embed)
+
+# --- Help subcommands for each category ---
+@help.command(name="configuration")
+async def help_configuration(ctx):
+    await send_category_help(ctx, "Configuration")
+
+@help.command(name="ban")
+async def help_ban(ctx):
+    await send_category_help(ctx, "Ban Management")
+
+@help.command(name="global")
+async def help_global(ctx):
+    await send_category_help(ctx, "Global Ban Actions")
+
+@help.command(name="verification")
+async def help_verification(ctx):
+    await send_category_help(ctx, "Verification Management")
+
+@help.command(name="auditor")
+async def help_auditor(ctx):
+    await send_category_help(ctx, "Auditor Management")
+
+@help.command(name="utilities")
+async def help_utilities(ctx):
+    await send_category_help(ctx, "Utilities")
+
+# --- Helper function to send category help ---
+async def send_category_help(ctx, category_name):
+    embed = discord.Embed(
+        title=f"{category_name} Commands",
+        color=discord.Color.blurple()
+    )
+    for cmd_name in CATEGORIES.get(category_name, []):
+        command = bot.get_command(cmd_name)
+        if command:
+            embed.add_field(
+                name=f"v!{command.name}",
+                value=command.help or "No description provided.",
+                inline=False
+            )
+
+    embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
+    await ctx.send(embed=embed)
 
 # --- Core Commands ---
 
