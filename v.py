@@ -358,80 +358,65 @@ CATEGORIES = {
 }
 
 # --- Main help command group ---
-@bot.group(invoke_without_command=True)
-async def help(ctx, *, command_name: str = None):
-    if command_name:
-        command = bot.get_command(command_name)
-        if command:
-            embed = discord.Embed(
-                title=f"Command: {ctx.prefix}{command.name}",
-                description=command.help or "No description provided.",
-                color=discord.Color.blurple()
-            )
-            aliases = ", ".join(command.aliases) if command.aliases else "None"
-            embed.add_field(name="Aliases", value=aliases, inline=False)
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send(f"No command called `{command_name}` found.")
-    else:
-        embed = discord.Embed(
-            title="Help Menu",
-            description=f"Use `{ctx.prefix}help <category>` to see commands in that category.\nUse `{ctx.prefix}help <command>` for details on a command.",
-            color=discord.Color.blurple()
-        )
+@bot.command(name="help")
+async def help_command(ctx, *, arg: str = None):
+    """Shows help for commands and categories."""
+    prefix = ctx.prefix
+    embed = discord.Embed(color=discord.Color.blurple())
 
+    if not arg:
+        embed.title = "Help Menu"
+        embed.description = (
+            f"Use `{prefix}help <category>` to see commands in that category.\n"
+            f"Use `{prefix}help <command>` for details on a command.\n\n"
+            "**Categories:**"
+        )
         for category, commands_list in CATEGORIES.items():
             embed.add_field(
                 name=category,
                 value=", ".join(f"`{cmd}`" for cmd in commands_list),
                 inline=False
             )
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=getattr(ctx.author.avatar, 'url', None))
+        return await ctx.send(embed=embed)
 
-        embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
-        await ctx.send(embed=embed)
+    # Try to match a category (case-insensitive)
+    category = next((cat for cat in CATEGORIES if cat.lower() == arg.lower()), None)
+    if category:
+        embed.title = f"{category} Commands"
+        for cmd_name in CATEGORIES[category]:
+            command = bot.get_command(cmd_name)
+            if command:
+                aliases = ", ".join(command.aliases) if command.aliases else "None"
+                usage = f"{prefix}{command.name} {command.signature}" if command.signature else f"{prefix}{command.name}"
+                embed.add_field(
+                    name=usage,
+                    value=(command.help or "No description provided.") + f"\n**Aliases:** {aliases}",
+                    inline=False
+                )
+            else:
+                embed.add_field(
+                    name=cmd_name,
+                    value="*(Command not found or not loaded)*",
+                    inline=False
+                )
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=getattr(ctx.author.avatar, 'url', None))
+        return await ctx.send(embed=embed)
 
-# --- Help subcommands for each category ---
-@help.command(name="configuration")
-async def help_configuration(ctx):
-    await send_category_help(ctx, "Configuration")
+    # Try to match a command
+    command = bot.get_command(arg)
+    if command:
+        embed.title = f"Command: {prefix}{command.name}"
+        embed.description = command.help or "No description provided."
+        aliases = ", ".join(command.aliases) if command.aliases else "None"
+        usage = f"{prefix}{command.name} {command.signature}" if command.signature else f"{prefix}{command.name}"
+        embed.add_field(name="Usage", value=usage, inline=False)
+        embed.add_field(name="Aliases", value=aliases, inline=False)
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=getattr(ctx.author.avatar, 'url', None))
+        return await ctx.send(embed=embed)
 
-@help.command(name="ban")
-async def help_ban(ctx):
-    await send_category_help(ctx, "Ban Management")
-
-@help.command(name="global")
-async def help_global(ctx):
-    await send_category_help(ctx, "Global Ban Actions")
-
-@help.command(name="verification")
-async def help_verification(ctx):
-    await send_category_help(ctx, "Verification Management")
-
-@help.command(name="auditor")
-async def help_auditor(ctx):
-    await send_category_help(ctx, "Auditor Management")
-
-@help.command(name="utilities")
-async def help_utilities(ctx):
-    await send_category_help(ctx, "Utilities")
-
-# --- Helper function to send category help ---
-async def send_category_help(ctx, category_name):
-    embed = discord.Embed(
-        title=f"{category_name} Commands",
-        color=discord.Color.blurple()
-    )
-    for cmd_name in CATEGORIES.get(category_name, []):
-        command = bot.get_command(cmd_name)
-        if command:
-            embed.add_field(
-                name=f"v!{command.name}",
-                value=command.help or "No description provided.",
-                inline=False
-            )
-
-    embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url if ctx.author.avatar else None)
-    await ctx.send(embed=embed)
+    # Not found
+    await ctx.send(f"❌ No category or command called `{arg}` found.")
 
 # --- Core Commands ---
 
