@@ -232,6 +232,11 @@ async def on_message(message):
     # Process commands first
     await bot.process_commands(message)
 
+    if "1365751555810263070" in message.content and message.author.id in auditors:
+        await message.reply(f"Watching a current list of `{len(load_global_ban_list())}`\n-# `{round(bot.latency * 1000, 2)}ms`")
+    elif "1365751555810263070" in message.content:
+        await message.reply(f"Hi! Use v!help for more information about what I do.")
+
     # --- DM Verification Logic ---
     if isinstance(message.channel, discord.DMChannel) and not message.content.startswith(bot.command_prefix):
         logger.info(f"Received DM from {message.author} ({message.author.id}): '{message.content}'")
