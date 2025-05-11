@@ -425,7 +425,7 @@ async def help_command(ctx, *, arg: str = None):
 @commands.cooldown(1, 300, commands.BucketType.guild) # Cooldown: 1 use per 5 mins per guild
 async def sync_global_ban_list(ctx):
     """(Admin) Updates the central global ban list with bans from all verified servers."""
-    await ctx.send("<a:loading:1234567890> Updating global ban list... This can take a few minutes depending on the number of verified servers.") # Use a loading emoji if you have one
+    await ctx.send("<a:loading:1371165596632219689> Updating global ban list... This can take a few minutes depending on the number of verified servers.") # Use a loading emoji if you have one
 
     start_time = datetime.now()
     try:
@@ -567,7 +567,7 @@ async def sync_local(ctx, confirm: str = None):
         return
 
     # --- Fetch current bans ---
-    await ctx.send("🔄 Checking local bans against the global list...")
+    await ctx.send("<a:loading:1371165596632219689> Checking local bans against the global list...")
     current_bans = set()
     try:
         async for ban_entry in ctx.guild.bans(limit=None):
@@ -960,7 +960,7 @@ async def display_ban_list(ctx, fetch_all=False, global_list=False):
 
     try:
         # Indicate processing
-        processing_message = await ctx.send("<a:loading:1234567890> Fetching ban list...") # Use a loading emoji
+        processing_message = await ctx.send("<a:loading:1371165596632219689> Fetching ban list...") # Use a loading emoji
 
         if global_list:
             title = "Global Ban List"
