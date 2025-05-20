@@ -8,3 +8,4 @@ bot.py
 data/data.json
 data/servers.json
 data/votebans.json
+.idea
