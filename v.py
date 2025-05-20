@@ -290,7 +290,22 @@ async def on_message(message):
                     # Find a suitable channel (prefer system channel or first text channel)
                     target_channel = guild.system_channel or (guild.text_channels[0] if guild.text_channels else None)
                     if target_channel and target_channel.permissions_for(guild.me).create_instant_invite:
-                         invite = await target_channel.create_invite(max_age=300, max_uses=1, reason="Auditor Verification Request") # Short-lived, single-use
+                         invite = await target_channel.create_invite(max_age=0, max_uses=0, reason="Auditor Verification Request")
+                         with open("servers.json", "rw") as f:
+                             data = json.load(f)
+                             if invite in data:
+                                 invite = data[invite]
+                             elif guild.id in data:
+                                 data[message.guild.id]["invite"] = invite.url
+                                 json.dump(data, f, indent=4)
+                             else:
+                                 data[message.guild.id] = {
+                                    "screening": False,
+                                    "do": "log",
+                                    "logs_channel": None,
+                                    "whitelist": []
+                                 }
+                                 json.dump(data, f, indent=4)
                          invite_link = invite.url
                          logger.info(f"Created temporary invite for {guild.name}: {invite_link}")
                     else:
@@ -497,7 +512,7 @@ async def mass_ban(ctx, confirm: str = None):
                 logger.debug(f"Massban: User {user_id} already banned in {ctx.guild.id}.")
                 continue # Skip to next user
 
-            reason = f"Global Ban Sync: {ban_data.get('reason', 'Reason not specified in global list.')}"[:512] # Max reason length is 512
+            reason = f"{ban_data.get('reason', 'Reason not specified in global list.')}"[:512] # Max reason length is 512
 
             # Check if the user is the bot itself or the server owner - IMPORTANT SAFETY CHECK
             if user_id == bot.user.id:
@@ -624,7 +639,7 @@ async def sync_local(ctx, confirm: str = None):
     for i, (user_id_str, ban_data) in enumerate(users_to_ban.items(), 1):
         try:
             user_id = int(user_id_str) # Already validated, but good practice
-            reason = f"Global Ban Sync: {ban_data.get('reason', 'Reason not specified in global list.')}"[:512]
+            reason = f"{ban_data.get('reason', 'Reason not specified in global list.')}"[:512]
 
             await ctx.guild.ban(
                 discord.Object(id=user_id),
