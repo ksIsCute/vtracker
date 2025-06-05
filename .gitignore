@@ -9,3 +9,7 @@ data/data.json
 data/servers.json
 data/votebans.json
 .idea
+cog/__pycache__/autoscreener.cpython-312.pyc
+cog/__pycache__/banmanagement.cpython-312.pyc
+data/config.json
+cog/__pycache__/settings.cpython-312.pyc
