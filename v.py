@@ -526,7 +526,8 @@ async def mass_ban(ctx, confirm: str = None):
             await ctx.guild.ban(
                 discord.Object(id=user_id), # Use discord.Object for users not in the server
                 reason=reason,
-                delete_message_days=0 # Don't delete messages for global sync bans
+                delete_message_seconds=0
+           
             )
             success += 1
             logger.info(f"Massban: Successfully banned {user_id} in {ctx.guild.id}. Reason: {reason}")
@@ -644,7 +645,7 @@ async def sync_local(ctx, confirm: str = None):
             await ctx.guild.ban(
                 discord.Object(id=user_id),
                 reason=reason,
-                delete_message_days=0
+                delete_message_seconds=0
             )
             success += 1
             logger.info(f"SyncLocal: Successfully banned {user_id} in {ctx.guild.id}. Reason: {reason}")
@@ -1194,7 +1195,7 @@ async def list_auditors(ctx):
 # --- Bot Execution ---
 if __name__ == "__main__":
     TOKEN = config_data.get('vtoken')
-    if not TOKEN or TOKEN == "YOUR_BOT_TOKEN_HERE":
+    if not TOKEN:
         logger.critical(f"Bot token is missing or placeholder in {CONFIG_FILE}. Please add a valid token.")
     else:
         try:
