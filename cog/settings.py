@@ -205,7 +205,7 @@ class Settings(commands.Cog):
         # Optionally send welcome message to server admin or log channel
         logs_channel_id = self.servers[guild_id].get('logs_channel', None)
         if logs_channel_id:
-            logs_channel = self.bot.get_channel(int(logs_channel_id))
+            logs_channel = guild.get_channel(int(logs_channel_id))
             if logs_channel:
                 await logs_channel.send(f"👋 **New server joined:** {guild.name} - Default detection settings applied.")
 

@@ -36,9 +36,18 @@ async def on_ready():
     logger.info(f"{Fore.CYAN}Bot is ready and cogs are loaded.{Style.RESET_ALL}")
 
 # File paths
-CONFIG_FILE = Path("data/asd.json")
+CONFIG_FILE = Path("data/config.json")
 VERIFIED_SERVERS_FILE = Path("data/verified_servers.json")
 GLOBAL_BAN_LIST_FILE = Path("data/global_ban_list.json")
+BLOCKED_USERS_FILE = Path("data/blocked_users.json")
+RATE_LIMIT_FILE = Path("data/rate_limits.json")
+
+# Anti-raid settings
+MAX_REQUESTS_PER_HOUR = 3  # Maximum verification requests per user per hour
+BLOCKED_SERVER_KEYWORDS = [
+    "racc", "raid", "spam", "@everyone", "http://", "https://", 
+    "discord.gg", "porn", "sex", "xxx", "motherless", "onlyfans"
+]
 
 def load_config():
     if not CONFIG_FILE.exists():
@@ -57,7 +66,15 @@ def load_config():
 
 # Global tracking variables
 config_data = load_config()
+vtoken = config_data.get('vtoken')
 auditors = config_data.get('auditors', []) # Load auditors from config
+
+def is_auditor():
+    """Decorator to check if the user is an auditor."""
+    def predicate(ctx):
+        return ctx.author.id in auditors  # Check if the user ID is in the auditors list
+    return commands.check(predicate)
+
 active_paginators = {}  # {user_id: message_id}
 original_ban_data = {}  # {message_id: {'user_ids': [], 'ban_list': [], 'timestamp': datetime}}
 
@@ -240,9 +257,65 @@ async def on_message(message):
     # --- DM Verification Logic ---
     if isinstance(message.channel, discord.DMChannel) and not message.content.startswith(bot.command_prefix):
         logger.info(f"Received DM from {message.author} ({message.author.id}): '{message.content}'")
+        
+        # Check if user is blocked
+        blocked_users = load_blocked_users()
+        if message.author.id in blocked_users:
+            logger.warning(f"Blocked user {message.author.id} attempted verification request")
+            await message.channel.send("❌ You have been blocked from making verification requests.")
+            return
+        
+        # Check rate limiting
+        is_limited, request_count = is_user_rate_limited(message.author.id)
+        if is_limited:
+            logger.warning(f"Rate limited user {message.author.id} (requests: {request_count})")
+            await message.channel.send(
+                f"❌ **Rate limit exceeded!** You can only make {MAX_REQUESTS_PER_HOUR} verification requests per hour.\n"
+                f"Current requests: {request_count}/{MAX_REQUESTS_PER_HOUR}\n"
+                f"Please wait before making another request."
+            )
+            return
+        
         try:
             server_id = int(message.content.strip())
             guild = bot.get_guild(server_id)
+
+            if not guild:
+                await message.channel.send(
+                    "❌ This bot is not in the server with this ID, or the ID is incorrect.\n"
+                    "DM functionality is **only** for server verification requests to join the global ban list network.\n\n"
+                    "Please ensure:\n"
+                    "1. The bot has been added to your server.\n"
+                    "2. You are sending the correct numerical Server ID.\n"
+                    "3. You have Administrator permissions in that server."
+                )
+                logger.warning(f"Verification attempt failed: Bot not in server {server_id}.")
+                return
+
+            # Check for suspicious server name
+            if is_server_name_suspicious(guild.name):
+                logger.warning(f"Suspicious server name detected: '{guild.name}' ({guild.id}) by user {message.author.id}")
+                # Block the user immediately
+                blocked_users.append(message.author.id)
+                save_blocked_users(blocked_users)
+                
+                # Notify auditors about the suspicious activity
+                audit_channel_id = 1365903180730335315
+                audit_channel = bot.get_channel(audit_channel_id)
+                if audit_channel:
+                    await audit_channel.send(
+                        f"🚨 **SUSPICIOUS VERIFICATION ATTEMPT BLOCKED** 🚨\n\n"
+                        f"**Server:** {guild.name} (`{guild.id}`)\n"
+                        f"**User:** {message.author} (`{message.author.id}`)\n"
+                        f"**Reason:** Suspicious server name detected\n"
+                        f"**User has been automatically blocked from future requests.**"
+                    )
+                
+                await message.channel.send(
+                    "❌ Your verification request has been rejected due to suspicious server name.\n"
+                    "If you believe this is an error, please contact an administrator."
+                )
+                return
 
             if not guild:
                 await message.channel.send(
@@ -278,6 +351,9 @@ async def on_message(message):
                  logger.info(f"Verification attempt: Server {guild.id} already verified.")
                  return
 
+            # Add to rate limit tracker (only after all checks pass)
+            add_rate_limit_request(message.author.id)
+
             # Try to create an invite link
             invite_link = "Failed to generate invite link"
             try:
@@ -291,21 +367,28 @@ async def on_message(message):
                     target_channel = guild.system_channel or (guild.text_channels[0] if guild.text_channels else None)
                     if target_channel and target_channel.permissions_for(guild.me).create_instant_invite:
                          invite = await target_channel.create_invite(max_age=0, max_uses=0, reason="Auditor Verification Request")
-                         with open("servers.json", "rw") as f:
-                             data = json.load(f)
-                             if invite in data:
-                                 invite = data[invite]
-                             elif guild.id in data:
-                                 data[message.guild.id]["invite"] = invite.url
-                                 json.dump(data, f, indent=4)
-                             else:
-                                 data[message.guild.id] = {
-                                    "screening": False,
-                                    "do": "log",
-                                    "logs_channel": None,
-                                    "whitelist": []
-                                 }
-                                 json.dump(data, f, indent=4)
+                         
+                         # Handle servers.json file properly
+                         try:
+                             with open("data/servers.json", "r") as f:
+                                 data = json.load(f)
+                         except (FileNotFoundError, json.JSONDecodeError):
+                             data = {}
+                         
+                         if str(guild.id) in data:
+                             data[str(guild.id)]["invite"] = invite.url
+                         else:
+                             data[str(guild.id)] = {
+                                "screening": False,
+                                "do": "log",
+                                "logs_channel": None,
+                                "whitelist": [],
+                                "invite": invite.url
+                             }
+                         
+                         with open("data/servers.json", "w") as f:
+                             json.dump(data, f, indent=4)
+                         
                          invite_link = invite.url
                          logger.info(f"Created temporary invite for {guild.name}: {invite_link}")
                     else:
@@ -369,6 +452,7 @@ CATEGORIES = {
     "Global Ban Actions": ["massban", "synclocal", "syncglobal"],
     "Verification Management": ["verify", "unverify", "reject"],
     "Auditor Management": ["auditor", "strip", "listauditors", "update"],
+    "Anti-Raid Management": ["block", "unblock", "blocklist", "resetlimits", "addkeyword", "removekeyword", "keywords"],
     "Utilities": ["checkname", "listservers", "help"]
 }
 
@@ -955,11 +1039,6 @@ async def display_ban_list(ctx, fetch_all=False, global_list=False):
             logger.debug(f"Previous active paginator for {ctx.author.id} not found, removing tracking.")
             if ctx.author.id in active_paginators: # Double check before deleting
                  del active_paginators[ctx.author.id]
-            # Also clean up potential orphan data
-            stale_message_id = active_paginators.get(ctx.author.id)
-            if stale_message_id and stale_message_id in original_ban_data:
-                 del original_ban_data[stale_message_id]
-
         except discord.Forbidden:
             await ctx.send("⚠️ Bot lacks permission to check for existing messages. Please ensure it can read message history.", delete_after=15)
             # Don't proceed, as we can't be sure if another paginator is active
@@ -1191,11 +1270,96 @@ async def list_auditors(ctx):
 
     await ctx.send(message)
 
+def load_blocked_users():
+    """Load blocked users from file"""
+    if not BLOCKED_USERS_FILE.exists():
+        return []
+    try:
+        with open(BLOCKED_USERS_FILE, "r") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, FileNotFoundError):
+        logger.error("Failed to load blocked users file")
+        return []
+
+def save_blocked_users(blocked_users):
+    """Save blocked users to file"""
+    try:
+        with open(BLOCKED_USERS_FILE, "w") as f:
+            json.dump(blocked_users, f, indent=4)
+    except Exception as e:
+        logger.error(f"Failed to save blocked users: {e}")
+
+def load_rate_limits():
+    """Load rate limit data from file"""
+    if not RATE_LIMIT_FILE.exists():
+        return {}
+    try:
+        with open(RATE_LIMIT_FILE, "r") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, FileNotFoundError):
+        logger.error("Failed to load rate limits file")
+        return {}
+
+def save_rate_limits(rate_limits):
+    """Save rate limit data to file"""
+    try:
+        with open(RATE_LIMIT_FILE, "w") as f:
+            json.dump(rate_limits, f, indent=4)
+    except Exception as e:
+        logger.error(f"Failed to save rate limits: {e}")
+
+def is_user_rate_limited(user_id):
+    """Check if user is rate limited"""
+    rate_limits = load_rate_limits()
+    user_id_str = str(user_id)
+    current_time = datetime.now().timestamp()
+    
+    if user_id_str not in rate_limits:
+        return False, 0
+    
+    user_data = rate_limits[user_id_str]
+    
+    # Clean old requests (older than 1 hour)
+    user_data["requests"] = [req_time for req_time in user_data["requests"] 
+                           if current_time - req_time < 3600]
+    
+    if len(user_data["requests"]) >= MAX_REQUESTS_PER_HOUR:
+        return True, len(user_data["requests"])
+    
+    return False, len(user_data["requests"])
+
+def add_rate_limit_request(user_id):
+    """Add a new request to user's rate limit tracker"""
+    rate_limits = load_rate_limits()
+    user_id_str = str(user_id)
+    current_time = datetime.now().timestamp()
+    
+    if user_id_str not in rate_limits:
+        rate_limits[user_id_str] = {"requests": []}
+    
+    rate_limits[user_id_str]["requests"].append(current_time)
+    save_rate_limits(rate_limits)
+
+def is_server_name_suspicious(server_name):
+    """Check if server name contains suspicious keywords"""
+    server_name_lower = server_name.lower()
+    return any(keyword in server_name_lower for keyword in BLOCKED_SERVER_KEYWORDS)
+
+# Load config
+config_data = load_config()
+vtoken = config_data.get('vtoken')
+auditors = config_data.get('auditors', []) # Load auditors from config
+
+def is_auditor():
+    """Decorator to check if the user is an auditor."""
+    def predicate(ctx):
+        return ctx.author.id in auditors  # Check if the user ID is in the auditors list
+    return commands.check(predicate)
 
 # --- Bot Execution ---
 if __name__ == "__main__":
-    TOKEN = config_data.get('vtoken')
-    if not TOKEN:
+    TOKEN = config_data.get('TOKEN') 
+    if not TOKEN or TOKEN == "YOUR_BOT_TOKEN_HERE":
         logger.critical(f"Bot token is missing or placeholder in {CONFIG_FILE}. Please add a valid token.")
     else:
         try:
@@ -1206,3 +1370,103 @@ if __name__ == "__main__":
              logger.critical("Failed to log in: Privileged Intents (Server Members or Message Content or Guild Bans) are not enabled for the bot in the Developer Portal.")
         except Exception as e:
              logger.critical(f"An unexpected error occurred during bot startup: {e}")
+
+@bot.command(name="block", aliases=["blockuser"])
+@is_auditor()
+async def block_user(ctx, user_id: int):
+    """Block a user from making verification requests"""
+    blocked_users = load_blocked_users()
+    if user_id not in blocked_users:
+        blocked_users.append(user_id)
+        save_blocked_users(blocked_users)
+        await ctx.send(f"✅ User `{user_id}` has been blocked from making verification requests.")
+        logger.info(f"User {user_id} blocked by auditor {ctx.author.id}")
+    else:
+        await ctx.send(f"❌ User `{user_id}` is already blocked.")
+
+@bot.command(name="unblock", aliases=["unblockuser"])
+@is_auditor()
+async def unblock_user(ctx, user_id: int):
+    """Unblock a user from making verification requests"""
+    blocked_users = load_blocked_users()
+    if user_id in blocked_users:
+        blocked_users.remove(user_id)
+        save_blocked_users(blocked_users)
+        await ctx.send(f"✅ User `{user_id}` has been unblocked.")
+        logger.info(f"User {user_id} unblocked by auditor {ctx.author.id}")
+    else:
+        await ctx.send(f"❌ User `{user_id}` is not blocked.")
+
+@bot.command(name="blocklist", aliases=["blocked"])
+@is_auditor()
+async def list_blocked_users(ctx):
+    """List all blocked users"""
+    blocked_users = load_blocked_users()
+    if not blocked_users:
+        await ctx.send("📋 No users are currently blocked.")
+        return
+    
+    blocked_list = "\n".join([f"• `{user_id}`" for user_id in blocked_users])
+    embed = discord.Embed(
+        title="🚫 Blocked Users",
+        description=f"**{len(blocked_users)} users blocked:**\n{blocked_list}",
+        color=discord.Color.red()
+    )
+    await ctx.send(embed=embed)
+
+@bot.command(name="resetlimits", aliases=["clearlimits"])
+@is_auditor()
+async def reset_rate_limits(ctx, user_id: int = None):
+    """Reset rate limits for a user or all users"""
+    if user_id:
+        rate_limits = load_rate_limits()
+        user_id_str = str(user_id)
+        if user_id_str in rate_limits:
+            del rate_limits[user_id_str]
+            save_rate_limits(rate_limits)
+            await ctx.send(f"✅ Rate limits reset for user `{user_id}`.")
+        else:
+            await ctx.send(f"❌ No rate limit data found for user `{user_id}`.")
+    else:
+        # Reset all rate limits
+        save_rate_limits({})
+        await ctx.send("✅ All rate limits have been reset.")
+
+@bot.command(name="addkeyword", aliases=["blockkeyword"])
+@is_auditor()
+async def add_blocked_keyword(ctx, *, keyword: str):
+    """Add a keyword to the blocked server names list"""
+    global BLOCKED_SERVER_KEYWORDS
+    keyword_lower = keyword.lower()
+    if keyword_lower not in [k.lower() for k in BLOCKED_SERVER_KEYWORDS]:
+        BLOCKED_SERVER_KEYWORDS.append(keyword_lower)
+        await ctx.send(f"✅ Added `{keyword}` to blocked keywords list.")
+        logger.info(f"Keyword '{keyword}' added by auditor {ctx.author.id}")
+    else:
+        await ctx.send(f"❌ Keyword `{keyword}` is already in the blocked list.")
+
+@bot.command(name="removekeyword", aliases=["unblockkeyword"])
+@is_auditor()
+async def remove_blocked_keyword(ctx, *, keyword: str):
+    """Remove a keyword from the blocked server names list"""
+    global BLOCKED_SERVER_KEYWORDS
+    keyword_lower = keyword.lower()
+    original_keywords = [k for k in BLOCKED_SERVER_KEYWORDS if k.lower() == keyword_lower]
+    if original_keywords:
+        BLOCKED_SERVER_KEYWORDS = [k for k in BLOCKED_SERVER_KEYWORDS if k.lower() != keyword_lower]
+        await ctx.send(f"✅ Removed `{keyword}` from blocked keywords list.")
+        logger.info(f"Keyword '{keyword}' removed by auditor {ctx.author.id}")
+    else:
+        await ctx.send(f"❌ Keyword `{keyword}` is not in the blocked list.")
+
+@bot.command(name="keywords", aliases=["blockedkeywords"])
+@is_auditor()
+async def list_blocked_keywords(ctx):
+    """List all blocked keywords"""
+    keywords_list = "\n".join([f"• `{keyword}`" for keyword in BLOCKED_SERVER_KEYWORDS])
+    embed = discord.Embed(
+        title="🚫 Blocked Keywords",
+        description=f"**{len(BLOCKED_SERVER_KEYWORDS)} keywords:**\n{keywords_list}",
+        color=discord.Color.red()
+    )
+    await ctx.send(embed=embed)

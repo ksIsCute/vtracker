@@ -175,7 +175,7 @@ class AutoScreener(commands.Cog):
 
         screening_enabled = server_settings.get('screening', False)
         action = server_settings.get('do', 'log') if screening_enabled else 'log'
-        logs_channel = self.bot.get_channel(server_settings.get('logs_channel'))
+        logs_channel = member.guild.get_channel(server_settings.get('logs_channel'))
 
         message = await self._take_action(member, action)
 
